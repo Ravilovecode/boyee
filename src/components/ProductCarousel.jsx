@@ -4,17 +4,23 @@ import galleryBg from '../assets/images/gallery/gallery-background.png';
 import leftImg from '../assets/images/gallery/left.png';
 import middleImg from '../assets/images/gallery/middle.png';
 import rightImg from '../assets/images/gallery/right.png';
+import snakePlantImg from '../assets/images/gallery/snake-plant.png';
+import jedePlantImg from '../assets/images/gallery/jede-plant.png';
 
 const ProductCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const carouselRef = useRef(null);
+  const isScrolling = useRef(false);
+  const scrollTimeout = useRef(null);
 
   const products = [
     { id: 1, name: 'Chinese Money', price: 220, image: leftImg },
     { id: 2, name: 'Monstera Deliciosa', price: 244, image: middleImg },
     { id: 3, name: 'Peace Lily', price: 180, image: rightImg },
+    { id: 4, name: 'Snake Plant', price: 199, image: snakePlantImg },
+    { id: 5, name: 'Jade Plant', price: 165, image: jedePlantImg },
   ];
 
   const getVisibleProducts = () => {
@@ -76,6 +82,50 @@ const ProductCarousel = () => {
     }
   };
 
+  // Add keyboard arrow key support
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        handlePrev();
+      } else if (e.key === 'ArrowRight') {
+        handleNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex]);
+
+  // Add trackpad horizontal swipe gesture support with cooldown
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const handleWheel = (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+
+        if (isScrolling.current) return;
+
+        if (e.deltaX > 15) {
+          isScrolling.current = true;
+          setCurrentIndex(prev => Math.min(prev + 1, products.length - 1));
+        } else if (e.deltaX < -15) {
+          isScrolling.current = true;
+          setCurrentIndex(prev => Math.max(prev - 1, 0));
+        }
+
+        clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(() => {
+          isScrolling.current = false;
+        }, 400);
+      }
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [products.length]);
+
   return (
     <section className="product-carousel-section" style={{ backgroundImage: `url(${galleryBg})` }}>
       <div className="carousel-container">
@@ -110,7 +160,7 @@ const ProductCarousel = () => {
                 </div>
                 <div className="product-info">
                   <h3 className="product-name">{product.name}</h3>
-                  <p className="product-price">${product.price}</p>
+                  <p className="product-price">₹{product.price}</p>
                 </div>
               </div>
             );
@@ -137,7 +187,7 @@ const ProductCarousel = () => {
       {/* Featured Product Details */}
       <div className="featured-product">
         <h2 className="featured-name">{products[currentIndex].name}</h2>
-        <p className="featured-price">${products[currentIndex].price}</p>
+        <p className="featured-price">₹{products[currentIndex].price}</p>
         <button className="add-to-cart-btn">+ Add to Cart</button>
       </div>
     </section>
