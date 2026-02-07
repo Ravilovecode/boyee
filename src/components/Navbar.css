@@ -1,0 +1,103 @@
+.navbar {
+  width: 100%;
+  padding: 20px 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 100px;
+  height: 80px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #c4c4c4;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #7cb342;
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.login-link {
+  text-decoration: none;
+  color: #c4c4c4;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #7cb342;
+}
+
+.divider {
+  color: #666;
+  font-weight: 300;
+}
+
+.avatar-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #c5e1a5;
+  background: transparent;
+  color: #7cb342;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.avatar-btn:hover {
+  background: #c5e1a5;
+  color: #fff;
+}

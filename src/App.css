@@ -1,0 +1,6 @@
+.app {
+  width: 100%;
+  min-height: 100vh;
+  background: #2C2C2C;
+  position: relative;
+}
