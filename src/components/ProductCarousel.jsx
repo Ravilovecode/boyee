@@ -128,6 +128,7 @@ const ProductCarousel = () => {
 
   return (
     <section className="product-carousel-section" style={{ backgroundImage: `url(${galleryBg})` }}>
+      <h2 className="section-heading">Our Top Selling Plants</h2>
       <div className="carousel-container">
         <div
           className="carousel-track"

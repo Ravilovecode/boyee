@@ -13,6 +13,24 @@
   overflow: hidden;
 }
 
+.section-heading {
+  font-family: 'Anton', sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 40px;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 15px 40px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
 .carousel-container {
   width: 100%;
   max-width: 1200px;
@@ -233,6 +251,11 @@
     padding: 60px 30px;
   }
 
+  .section-heading {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+
   .carousel-container {
     padding: 30px 30px 25px 30px;
     height: auto;
@@ -288,6 +311,11 @@
 @media (max-width: 768px) {
   .product-carousel-section {
     padding: 50px 20px;
+  }
+
+  .section-heading {
+    font-size: 2rem;
+    margin-bottom: 25px;
   }
 
   .carousel-container {
@@ -376,6 +404,11 @@
     min-height: auto;
   }
 
+  .section-heading {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
   .carousel-container {
     padding: 20px 10px 15px 10px;
     border-radius: 25px;
@@ -426,6 +459,11 @@
 }
 
 @media (max-width: 360px) {
+  .section-heading {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+
   .carousel-container {
     min-height: 360px;
   }
