@@ -4,3 +4,14 @@
   background: #2C2C2C;
   position: relative;
 }
+
+.main-content {
+  min-height: 100vh;
+  padding-bottom: 80px; /* Space for bottom nav */
+}
+
+@media (min-width: 769px) {
+  .main-content {
+    padding-bottom: 0;
+  }
+}

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Hero.css';
 import heroPlant from '../assets/images/hero-plant1.png';
 import plantSmall1 from '../assets/images/plant-small-1.png';
@@ -76,9 +77,9 @@ const Hero = () => {
                 </span>
                 <span className="btn-text">GET THE APP</span>
               </a>
-              <a href="#products" className="btn-explore">
+              <Link to="/products" className="btn-explore">
                 EXPLORE PLANTS
-              </a>
+              </Link>
             </div>
           </div>
 
