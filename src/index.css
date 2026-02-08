@@ -57,3 +57,56 @@ button {
 ::-webkit-scrollbar-thumb:hover {
   background: #7cb342;
 }
+
+/* ===== GLOBAL RESPONSIVE UTILITIES ===== */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve touch scrolling */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Smooth transitions for layout changes */
+.hero-container,
+.carousel-container,
+.navbar-container {
+  transition: padding 0.3s ease;
+}

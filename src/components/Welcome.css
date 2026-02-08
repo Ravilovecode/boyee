@@ -153,6 +153,33 @@
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+  .welcome-modal {
+    padding: 35px 30px;
+    max-width: 90%;
+    margin: 0 15px;
+  }
+
+  .welcome-title {
+    font-size: 1.7rem;
+  }
+
+  .welcome-text {
+    font-size: 1rem;
+  }
+
+  .welcome-features {
+    font-size: 0.9rem;
+    padding: 18px;
+  }
+
+  .welcome-btn {
+    padding: 12px 35px;
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
 @media (max-width: 640px) {
   .welcome-modal {
     padding: 30px 25px;
@@ -169,5 +196,37 @@
   .welcome-features {
     font-size: 0.85rem;
     padding: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .welcome-modal {
+    padding: 25px 20px;
+    border-radius: 15px;
+  }
+
+  .welcome-title {
+    font-size: 1.4rem;
+  }
+
+  .welcome-text {
+    font-size: 0.9rem;
+  }
+
+  .welcome-features {
+    font-size: 0.8rem;
+    padding: 12px;
+    line-height: 1.8;
+  }
+
+  .welcome-btn {
+    padding: 12px 30px;
+    font-size: 0.9rem;
+  }
+
+  .welcome-close {
+    top: 10px;
+    right: 15px;
+    font-size: 1.7rem;
   }
 }

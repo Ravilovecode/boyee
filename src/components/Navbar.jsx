@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Navbar.css';
 import logo from '../assets/images/logo.png';
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -10,15 +20,32 @@ const Navbar = () => {
           <img src={logo} alt="Boyee" className="logo-icon" />
         </div>
 
-        <ul className="navbar-links">
-          <li><a href="#shop">Shop</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#delivery">Delivery</a></li>
-          <li><a href="#contacts">Contacts</a></li>
+        {/* Hamburger Menu Button */}
+        <button 
+          className={`hamburger-btn ${isMenuOpen ? 'active' : ''}`}
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+        </button>
+
+        {/* Mobile Menu Overlay */}
+        <div 
+          className={`menu-overlay ${isMenuOpen ? 'active' : ''}`}
+          onClick={closeMenu}
+        ></div>
+
+        <ul className={`navbar-links ${isMenuOpen ? 'active' : ''}`}>
+          <li><a href="#shop" onClick={closeMenu}>Shop</a></li>
+          <li><a href="#features" onClick={closeMenu}>Features</a></li>
+          <li><a href="#delivery" onClick={closeMenu}>Delivery</a></li>
+          <li><a href="#contacts" onClick={closeMenu}>Contacts</a></li>
         </ul>
 
-        <div className="navbar-auth">
-          <a href="#login" className="login-link">Log in</a>
+        <div className={`navbar-auth ${isMenuOpen ? 'active' : ''}`}>
+          <a href="#login" className="login-link" onClick={closeMenu}>Log in</a>
           <span className="divider">|</span>
           <button className="avatar-btn">
             <span>O</span>

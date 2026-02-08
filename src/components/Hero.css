@@ -349,12 +349,18 @@
   }
 
   .hero-title {
-    font-size: 3rem;
+    font-size: 3.5rem;
     text-align: center;
+  }
+
+  .hero-typing {
+    text-align: center;
+    max-width: 100%;
   }
 
   .hero-description {
     text-align: center;
+    max-width: 100%;
   }
 
   .hero-actions {
@@ -369,35 +375,232 @@
   .plant-cards {
     justify-content: center;
     padding-right: 0;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+
+  .hero-container {
+    padding: 0 25px;
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  /* Flatten structure for proper ordering on mobile */
+  .hero-left,
+  .hero-right {
+    display: contents;
+  }
+
+  .hero-content {
+    display: contents;
+  }
+
+  /* Order elements: 1-plant, 2-title, 3-tags, 4-rest */
+  .hero-plant-wrapper {
+    order: 1;
+  }
+
+  .hero-title {
+    order: 2;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    line-height: 1.15;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  /* Make title fit in 2 lines */
+  .hero-title br {
+    display: none;
+  }
+
+  .hero-title .title-outline,
+  .hero-title .title-green {
+    display: inline;
+  }
+
+  .category-tags {
+    order: 3;
+    margin-top: 10px;
+  }
+
+  .hero-typing {
+    order: 4;
+    margin-top: 15px;
+  }
+
+  .hero-description {
+    order: 5;
+  }
+
+  .hero-actions {
+    order: 6;
+    margin-top: 10px;
+  }
+
+  .plant-cards {
+    order: 7;
+    margin-top: 20px;
+  }
+
+  .hero-plant-img {
+    width: 280px;
+    max-height: 350px;
+  }
+
+  .orbit-ring {
+    width: 260px;
+    height: 80px;
+  }
+
+  .hero-typing {
+    font-size: 1rem;
+  }
+
+  .hero-description {
+    font-size: 0.9rem;
+  }
+
+  .category-tags {
+    gap: 8px;
+  }
+
+  .category-tag {
+    padding: 6px 14px;
+    font-size: 0.65rem;
+    letter-spacing: 0.5px;
+    min-height: auto;
+    min-width: auto;
+  }
+
+  .plant-cards {
+    gap: 20px;
+  }
+
+  .plant-card {
+    width: 160px;
+    height: 200px;
+  }
+
+  .plant-card::after {
+    width: 140px;
+    height: 100px;
+  }
+
+  .plant-card-img {
+    width: 150px;
+    height: 180px;
   }
 }
 
 @media (max-width: 640px) {
+  .hero {
+    padding-top: 90px;
+  }
+
+  .hero-container {
+    padding: 0 20px;
+    gap: 12px;
+  }
+
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
+    line-height: 1.15;
   }
 
   .hero-plant-img {
-    width: 260px;
+    width: 220px;
+    max-height: 280px;
   }
 
   .orbit-ring {
-    width: 200px;
-    height: 60px;
+    width: 180px;
+    height: 55px;
+  }
+
+  .category-tags {
+    gap: 6px;
+  }
+
+  .category-tag {
+    padding: 5px 12px;
+    font-size: 0.6rem;
+    letter-spacing: 0.3px;
   }
 
   .plant-card {
-    width: 150px;
-    height: 180px;
+    width: 130px;
+    height: 160px;
+  }
+
+  .plant-card::after {
+    width: 120px;
+    height: 80px;
+    border-radius: 15px;
   }
 
   .plant-card-img {
-    width: 140px;
-    height: 170px;
+    width: 120px;
+    height: 150px;
   }
 
   .hero-actions {
     flex-direction: column;
     gap: 15px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .btn-shop {
+    width: 100%;
+    max-width: 250px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-title {
+    font-size: 1.5rem;
+    line-height: 1.15;
+  }
+
+  .hero-plant-img {
+    width: 180px;
+    max-height: 230px;
+  }
+
+  .orbit-ring {
+    width: 150px;
+    height: 45px;
+  }
+
+  .category-tags {
+    gap: 5px;
+  }
+
+  .category-tag {
+    padding: 4px 10px;
+    font-size: 0.55rem;
+  }
+
+  .plant-cards {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .plant-card {
+    width: 120px;
+    height: 150px;
+  }
+
+  .plant-card-img {
+    width: 110px;
+    height: 140px;
   }
 }
