@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import loginBg from '../assets/images/login/login-bg.png';
@@ -13,14 +13,37 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
+  const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Auto-dismiss snackbar after 5 seconds
+  useEffect(() => {
+    if (showError) {
+      const timer = setTimeout(() => {
+        setShowError(false);
+        setTimeout(() => setError(''), 400); // clear text after slide-out animation
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showError]);
+
+  const showErrorSnackbar = (message) => {
+    setError(message);
+    setShowError(true);
+  };
+
+  const dismissError = () => {
+    setShowError(false);
+    setTimeout(() => setError(''), 400);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setShowError(false);
     setLoading(true);
 
     try {
@@ -33,7 +56,7 @@ const Login = () => {
       login(userData);
       navigate('/home');
     } catch (err) {
-      setError(err.message || 'Something went wrong');
+      showErrorSnackbar(err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -41,6 +64,28 @@ const Login = () => {
 
   return (
     <div className="login-page">
+
+      {/* ====== SNACKBAR ERROR TOAST ====== */}
+      {error && (
+        <div className={`snackbar-error ${showError ? 'snackbar-show' : 'snackbar-hide'}`}>
+          <div className="snackbar-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+              <path d="M12 8V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="12" cy="16" r="1" fill="currentColor" />
+            </svg>
+          </div>
+          <span className="snackbar-text">{error}</span>
+          <button className="snackbar-close" onClick={dismissError} aria-label="Dismiss">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+          <div className="snackbar-progress">
+            <div className={`snackbar-progress-bar ${showError ? 'snackbar-progress-animate' : ''}`} />
+          </div>
+        </div>
+      )}
 
       {/* ============ MOBILE LAYOUT (card style) ============ */}
       <div className="login-mobile">
@@ -69,8 +114,6 @@ const Login = () => {
             <p className="login-subtitle">
               {isLogin ? 'login to your account' : 'sign up for a new account'}
             </p>
-
-            {error && <p className="login-error">{error}</p>}
 
             <form className="login-form" onSubmit={handleSubmit}>
               {!isLogin && (
@@ -115,9 +158,9 @@ const Login = () => {
 
             <p className="login-switch">
               {isLogin ? (
-                <>Don't have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(false); setError(''); }}>Signup</button></>
+                <>Don't have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(false); dismissError(); }}>Signup</button></>
               ) : (
-                <>Already have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(true); setError(''); }}>Login</button></>
+                <>Already have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(true); dismissError(); }}>Login</button></>
               )}
             </p>
           </div>
@@ -145,8 +188,6 @@ const Login = () => {
             </h1>
             <h2 className="ld-subtitle">{isLogin ? 'USER LOGIN' : 'CREATE ACCOUNT'}</h2>
 
-            {error && <p className="login-error">{error}</p>}
-
             <form className="ld-form" onSubmit={handleSubmit}>
               {!isLogin && (
                 <input type="text" placeholder="full name" value={name} onChange={(e) => setName(e.target.value)} className="ld-input" required />
@@ -171,9 +212,9 @@ const Login = () => {
 
             <p className="ld-switch">
               {isLogin ? (
-                <>Don't have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(false); setError(''); }}>Sign Up</button></>
+                <>Don't have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(false); dismissError(); }}>Sign Up</button></>
               ) : (
-                <>Already have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(true); setError(''); }}>Login</button></>
+                <>Already have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(true); dismissError(); }}>Login</button></>
               )}
             </p>
           </div>

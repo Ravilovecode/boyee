@@ -1,5 +1,18 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Error code → user-friendly English message mapping
+const ERROR_MESSAGES = {
+    INVALID_CREDENTIALS: 'The email or password you entered is incorrect. Please try again.',
+    USER_ALREADY_EXISTS: 'An account with this email already exists. Please login instead.',
+    INVALID_USER_DATA: 'Please check your information and try again.',
+    USER_NOT_FOUND: 'Account not found. Please check your email or sign up.',
+    UNKNOWN_ERROR: 'Something went wrong. Please try again later.',
+};
+
+const getErrorMessage = (errorCode, fallback) => {
+    return ERROR_MESSAGES[errorCode] || fallback || ERROR_MESSAGES.UNKNOWN_ERROR;
+};
+
 export const loginUser = async (email, password) => {
     const res = await fetch(`${API_URL}/api/users/login`, {
         method: 'POST',
@@ -7,10 +20,15 @@ export const loginUser = async (email, password) => {
         body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json();
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        throw new Error('Something went wrong. Please try again later.');
+    }
 
     if (!res.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(getErrorMessage(data.errorCode, data.message));
     }
 
     return data;
@@ -23,10 +41,15 @@ export const registerUser = async (name, email, password) => {
         body: JSON.stringify({ name, email, password }),
     });
 
-    const data = await res.json();
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        throw new Error('Something went wrong. Please try again later.');
+    }
 
     if (!res.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(getErrorMessage(data.errorCode, data.message));
     }
 
     return data;
