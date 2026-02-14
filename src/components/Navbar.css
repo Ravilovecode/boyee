@@ -41,9 +41,10 @@
 .navbar-links {
   display: flex;
   list-style: none;
-  gap: 40px;
+  gap: 32px;
   margin: 0;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .navbar-links a,
@@ -68,7 +69,9 @@
 .navbar-auth {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  margin-left: 20px;
+  flex-shrink: 0;
 }
 
 .login-link {
@@ -112,6 +115,12 @@
 .avatar-btn:hover {
   background: #c5e1a5;
   color: #fff;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 83, 80, 0.15);
+  border-color: #ef5350;
+  color: #ef5350;
 }
 
 /* ===== HAMBURGER MENU ===== */
@@ -248,6 +257,16 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+/* ===== DESKTOP-ONLY VISIBILITY ===== */
+.desktop-only {
+  display: flex;
+}
+
+/* ===== MODERN MOBILE DRAWER ===== */
+.mobile-drawer {
+  display: none;
+}
+
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
   .navbar-container {
@@ -295,6 +314,12 @@
     display: flex;
   }
 
+  /* Hide desktop nav on mobile */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Overlay */
   .menu-overlay {
     display: block;
     position: fixed;
@@ -302,7 +327,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -314,46 +341,179 @@
     visibility: visible;
   }
 
-  .navbar-links {
+  /* --- Modern Drawer Panel --- */
+  .mobile-drawer {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     top: 0;
     right: -100%;
-    width: 70%;
-    max-width: 300px;
+    width: 78%;
+    max-width: 320px;
     height: 100vh;
+    height: 100dvh;
     background: #1a1a1a;
-    flex-direction: column;
-    justify-content: center;
+    z-index: 200;
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.4);
+    overflow-y: auto;
+    padding: 0 0 90px 0;
+  }
+
+  .mobile-drawer.active {
+    right: 0;
+  }
+
+  /* --- Profile Section --- */
+  .drawer-profile {
+    display: flex;
     align-items: center;
-    gap: 30px;
-    padding: 80px 40px;
-    transition: right 0.3s ease;
-    z-index: 100;
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+    gap: 16px;
+    padding: 32px 24px 28px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin-top: 16px;
   }
 
-  .navbar-links.active {
-    right: 0;
+  .drawer-profile:active {
+    background: rgba(255, 255, 255, 0.05);
   }
 
-  .navbar-links a {
-    font-size: 1.2rem;
-    color: #ffffff;
-  }
-
-  .navbar-auth {
-    position: fixed;
-    bottom: 50px;
-    right: -100%;
-    width: 70%;
-    max-width: 300px;
+  .drawer-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2d6a4f, #52b788);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    transition: right 0.3s ease;
-    z-index: 100;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
   }
 
-  .navbar-auth.active {
-    right: 0;
+  .drawer-avatar-guest {
+    background: rgba(255, 255, 255, 0.1);
+    color: #888;
+  }
+
+  .drawer-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .drawer-user-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .drawer-user-email {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: #777;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+
+  .drawer-chevron {
+    color: #555;
+    flex-shrink: 0;
+  }
+
+  /* --- Dividers --- */
+  .drawer-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 8px 24px;
+  }
+
+  /* --- Nav Links --- */
+  .drawer-nav {
+    list-style: none;
+    margin: 12px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .drawer-nav li button {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 16px 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #ccc;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+
+  .drawer-nav li button:hover,
+  .drawer-nav li button:active {
+    background: rgba(124, 179, 66, 0.08);
+    color: #7cb342;
+  }
+
+  .drawer-nav li button svg {
+    flex-shrink: 0;
+    color: #666;
+    transition: color 0.2s ease;
+  }
+
+  .drawer-nav li button:hover svg,
+  .drawer-nav li button:active svg {
+    color: #7cb342;
+  }
+
+  /* --- Spacer pushes logout to bottom --- */
+  .drawer-spacer {
+    flex: 1;
+    min-height: 20px;
+  }
+
+  /* --- Logout Button --- */
+  .drawer-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: calc(100% - 48px);
+    margin: 0 24px 40px;
+    padding: 15px 0;
+    background: none;
+    border: 1px solid rgba(239, 83, 80, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #ef5350;
+    transition: all 0.25s ease;
+  }
+
+  .drawer-logout:hover,
+  .drawer-logout:active {
+    background: rgba(239, 83, 80, 0.1);
+    border-color: #ef5350;
   }
 }
 
@@ -386,11 +546,7 @@
     height: 40px;
   }
 
-  .navbar-links {
-    width: 80%;
-  }
-
-  .navbar-auth {
-    width: 80%;
+  .mobile-drawer {
+    width: 85%;
   }
 }
