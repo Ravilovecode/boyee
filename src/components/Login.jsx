@@ -152,7 +152,7 @@ const Login = () => {
               )}
 
               <button type="submit" className="login-btn" disabled={loading}>
-                {loading ? 'Please wait...' : (isLogin ? 'Login' : 'Sign Up')}
+                {loading ? (<><span className="btn-spinner" /><span>Please wait...</span></>) : (isLogin ? 'Login' : 'Sign Up')}
               </button>
             </form>
 
@@ -206,7 +206,7 @@ const Login = () => {
               )}
 
               <button type="submit" className="ld-login-btn" disabled={loading}>
-                {loading ? 'PLEASE WAIT...' : (isLogin ? 'LOGIN' : 'SIGN UP')}
+                {loading ? (<><span className="btn-spinner" /><span>PLEASE WAIT...</span></>) : (isLogin ? 'LOGIN' : 'SIGN UP')}
               </button>
             </form>
 
