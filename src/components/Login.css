@@ -818,16 +818,48 @@
   font-size: 0.9rem;
 }
 
-.otp-modal input {
-  width: 100%;
-  padding: 12px;
+
+/* OTP Inputs Container */
+.otp-input-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  /* Slightly tighter gap for mobile */
+  margin-bottom: 24px;
+}
+
+/* Individual Digit Input */
+.otp-digit-input {
+  width: 42px;
+  height: 48px;
+  font-size: 1.3rem;
+  text-align: center;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 1.5rem;
-  text-align: center;
-  letter-spacing: 5px;
-  margin-bottom: 20px;
-  color: #333;
+  background: #f9f9f9;
+  font-weight: 600;
+  color: #1b4332;
+  outline: none;
+  transition: all 0.2s ease;
+  padding: 0;
+  appearance: textfield;
+  /* Remove spinner on some browsers if number type is used */
+}
+
+.otp-digit-input:focus {
+  border-color: #2d6a4f;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Specific overrides for mobile if needed, but flex handles mostly well */
+@media (max-width: 400px) {
+  .otp-digit-input {
+    width: 36px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
 }
 
 .otp-actions {

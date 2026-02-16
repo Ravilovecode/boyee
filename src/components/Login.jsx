@@ -16,7 +16,8 @@ const Login = () => {
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -68,7 +69,8 @@ const Login = () => {
   const handleVerifyOtp = async () => {
     setLoading(true);
     try {
-      await verifyOtpApi(email, otp);
+      const otpString = otp.join("");
+      await verifyOtpApi(email, otpString);
       // Only register after verification
       const userData = await registerUser(name, email, password);
       login(userData);
@@ -77,6 +79,53 @@ const Login = () => {
       showErrorSnackbar(err.message || 'OTP Verification Failed');
       setLoading(false);
     }
+  };
+
+  const handleOtpChange = (e, index) => {
+    const { value } = e.target;
+    // contentEditable or custom input handling logic
+    const newOtp = [...otp];
+    newOtp[index] = value.substring(value.length - 1); // take only last char
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      setActiveOtpIndex(index + 1);
+      // Document.getElementById is a simple way, or we could use refs used in a loop
+      const nextInput = document.getElementById(`otp-input-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (e, index) => {
+    if (e.key === 'Backspace') {
+      if (!otp[index] && index > 0) {
+        setActiveOtpIndex(index - 1);
+        const prevInput = document.getElementById(`otp-input-${index - 1}`);
+        if (prevInput) prevInput.focus();
+      } else {
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
+      }
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    e.preventDefault();
+    const data = e.clipboardData.getData('text');
+    if (!data) return;
+    const splitData = data.split('').slice(0, 6);
+    const newOtp = [...otp];
+    splitData.forEach((char, index) => {
+      if (index < 6) newOtp[index] = char;
+    });
+    setOtp(newOtp);
+    // Focus the last filled box or the next empty one ?
+    // Let's focus the last one 
+    const lastIndex = Math.min(splitData.length, 5);
+    setActiveOtpIndex(lastIndex);
+    const lastInput = document.getElementById(`otp-input-${lastIndex}`);
+    if (lastInput) lastInput.focus();
   };
 
   return (
@@ -110,13 +159,23 @@ const Login = () => {
           <div className="otp-modal">
             <h3>Verify OTP</h3>
             <p>Enter the 6-digit code sent to {email}</p>
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              maxLength="6"
-            />
+            <div className="otp-input-container">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  id={`otp-input-${index}`}
+                  type="text" // numeric only ideally, but text is fine
+                  className="otp-digit-input"
+                  value={digit}
+                  onChange={(e) => handleOtpChange(e, index)}
+                  onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                  onPaste={handleOtpPaste}
+                  maxLength="1"
+                  autoFocus={index === 0}
+                />
+              ))}
+            </div>
+
             <div className="otp-actions">
               <button onClick={handleVerifyOtp} disabled={loading}>{loading ? 'Verifying...' : 'Verify'}</button>
               <button className="cancel-btn" onClick={() => setShowOtpModal(false)}>Cancel</button>
