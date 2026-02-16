@@ -39,26 +39,44 @@ const MyOrdersPage = () => {
                     <div className="orders-list">
                         {orders.map((order) => (
                             <div key={order._id} className="order-card">
-                                <div className="order-header">
-                                    <div>
-                                        <span className="order-id">Order ID: {order._id}</span>
-                                        <span className="order-date">{new Date(order.createdAt).toLocaleDateString()}</span>
+                                <div className="order-card-content">
+                                    <div className="order-image-column">
+                                        {order.orderItems.length > 0 && (
+                                            <div className="main-order-image">
+                                                <img
+                                                    src={order.orderItems[0].image}
+                                                    alt={order.orderItems[0].name}
+                                                />
+                                                {order.orderItems.length > 1 && (
+                                                    <span className="image-overlay">+{order.orderItems.length - 1}</span>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
-                                    <Link to={`/order/${order._id}`} className="view-details-btn">View Details</Link>
+                                    <div className="order-details-column">
+                                        <div className="order-primary-info">
+                                            <div className="order-status-row">
+                                                <span className={`status-text ${order.isDelivered ? 'delivered' : 'processing'}`}>
+                                                    {order.isDelivered ? 'Delivered' : 'Processing'}
+                                                </span>
+                                                <span className="order-date">On {new Date(order.createdAt).toLocaleDateString()}</span>
+                                            </div>
+                                            <h3 className="product-names">
+                                                {order.orderItems.map(item => item.name).join(', ')}
+                                            </h3>
+                                            <div className="order-meta-row">
+                                                <span className="order-rating">★★★★☆</span> {/* Placeholder for rating */}
+                                            </div>
+                                            <div className="order-price-row">
+                                                <span className="currency">₹</span>
+                                                <span className="price">{order.totalPrice.toFixed(0)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="order-body">
-                                    <div className="order-info">
-                                        <p>Total: <strong>₹{order.totalPrice.toFixed(2)}</strong></p>
-                                        <p>Items: {order.orderItems.length}</p>
-                                    </div>
-                                    <div className="order-status">
-                                        <span className={`status-badge ${order.isPaid ? 'paid' : 'unpaid'}`}>
-                                            {order.isPaid ? 'Paid' : 'Not Paid'}
-                                        </span>
-                                        <span className={`status-badge ${order.isDelivered ? 'delivered' : 'processing'}`}>
-                                            {order.isDelivered ? 'Delivered' : 'Processing'}
-                                        </span>
-                                    </div>
+                                <div className="order-actions-row">
+                                    {/* View details could go here or be a full clickable card */}
+                                    <Link to={`/order/${order._id}`} className="view-details-link">View Details</Link>
                                 </div>
                             </div>
                         ))}

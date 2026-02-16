@@ -3,7 +3,7 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: 
+  background:
     radial-gradient(circle at top left, rgba(197, 205, 154, 0.25) 0%, transparent 50%),
     radial-gradient(circle at top right, rgba(197, 205, 154, 0.25) 0%, transparent 50%),
     radial-gradient(circle at bottom left, rgba(197, 205, 154, 0.22) 0%, transparent 50%),
@@ -86,15 +86,19 @@
   0% {
     transform: rotateX(75deg) rotateZ(0deg);
   }
+
   100% {
     transform: rotateX(75deg) rotateZ(360deg);
   }
 }
 
 @keyframes floatInSpace {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-20px);
   }
@@ -188,6 +192,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -216,6 +221,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -425,9 +431,9 @@
   }
 
   /* Make title fit in 2 lines */
-  .hero-title br {
+  /* .hero-title br {
     display: none;
-  }
+  } */
 
   .hero-title .title-outline,
   .hero-title .title-green {

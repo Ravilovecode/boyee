@@ -65,9 +65,11 @@
 .item-image img {
     width: 80px;
     height: 80px;
-    object-fit: cover;
+    object-fit: contain;
+    background-color: #ffffff;
     border-radius: 4px;
     margin-right: 1rem;
+    border: 1px solid #eee;
 }
 
 .item-details {
@@ -107,6 +109,20 @@
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    color: #333;
+    /* Ensure text is visible */
+}
+
+.shipping-info-card p,
+.payment-info-card p,
+.delivery-info-card p {
+    margin: 0.5rem 0;
+    line-height: 1.4;
+    color: #555;
+}
+
+.shipping-info-card strong {
+    color: #333;
 }
 
 .order-summary-column h3 {

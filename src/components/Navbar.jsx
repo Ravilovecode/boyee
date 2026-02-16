@@ -199,9 +199,10 @@ const Navbar = () => {
             <li>
               <button onClick={() => handleNavClick('/products')}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M3 6H21" stroke="currentColor" strokeWidth="1.8" />
-                  <path d="M16 10C16 12.21 14.21 14 12 14C9.79 14 8 12.21 8 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M12 22v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 13a7 7 0 0 1 7-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 13a7 7 0 0 0-7-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M9 22h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 Products
               </button>

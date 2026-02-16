@@ -58,10 +58,8 @@ const Hero = () => {
         <div className="hero-right">
           <div className="hero-content">
             <h1 className="hero-title">
-              <span className="title-outline">AI-POWERED</span>{' '}
-              <span className="title-green">PLANT CARE</span>
-              <br />
-              <span className="title-outline">FOR YOUR HOME</span>
+              AI-POWERED <span className="title-green">PLANT CARE</span> <br /> FOR YOUR
+              HOME
             </h1>
 
             <p className="hero-typing">
@@ -72,7 +70,7 @@ const Hero = () => {
               <a href="#shop" className="btn-shop">
                 <span className="btn-arrow">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
                 <span className="btn-text">GET THE APP</span>

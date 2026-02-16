@@ -1,7 +1,11 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getAllPlants = async () => {
-    const response = await fetch(`${API_URL}/api/plants`);
+export const getAllPlants = async (query = {}) => {
+    // Construct query string from object
+    const queryString = new URLSearchParams(query).toString();
+    const url = `${API_URL}/api/plants${queryString ? `?${queryString}` : ''}`;
+
+    const response = await fetch(url);
     if (!response.ok) {
         throw new Error('Failed to fetch plants');
     }

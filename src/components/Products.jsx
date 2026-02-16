@@ -12,7 +12,7 @@ import { useNotification } from '../context/NotificationContext';
 import { getAllPlants } from '../services/plantService';
 import './Products.css';
 
-function Products() {
+function Products({ selectedCategory, title, showViewAll = true }) {
   const { addToCart } = useCart();
   const { showNotification } = useNotification();
   const [products, setProducts] = useState([]);
@@ -21,8 +21,14 @@ function Products() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
-        const data = await getAllPlants();
+        const query = {};
+        if (selectedCategory) {
+          query.category = selectedCategory;
+        }
+
+        const data = await getAllPlants(query);
         // Map backend data to frontend structure
         const mappedProducts = data.map(plant => ({
           id: plant._id, // Use _id as id
@@ -47,17 +53,22 @@ function Products() {
     };
 
     fetchProducts();
-  }, []);
+  }, [selectedCategory]);
 
-  if (loading) return <div className="products-container"><p>Loading products...</p></div>;
+  if (loading) return <div className="products-container" style={{ padding: '20px' }}><p>Loading...</p></div>;
   if (error) return <div className="products-container"><p>{error}</p></div>;
+  // If no products in this category (and it's a section), maybe hide it?
+  if (products.length === 0) return null;
 
   return (
     <section className="products-section">
       <div className="products-container">
         {/* Section Header */}
         <div className="products-header">
-          <h2 className="products-title">Bestsellers</h2>
+          <h2 className="products-title">
+            {title || (selectedCategory === 'Best Selling' ? 'Bestsellers' :
+              selectedCategory ? `${selectedCategory} Plants` : 'All Plants')}
+          </h2>
         </div>
 
         {/* Products Grid */}
@@ -131,37 +142,7 @@ function Products() {
         </button>
 
         {/* Second Section */}
-        <div className="products-header second-section">
-          <h2 className="products-title">Greens That Make a Statement</h2>
-        </div>
 
-        {/* Features Row */}
-        <div className="features-row">
-          <div className="feature-item">
-            <div className="feature-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 8V12L15 15" stroke="#1B5E20" strokeWidth="2" strokeLinecap="round" />
-                <circle cx="12" cy="12" r="9" stroke="#1B5E20" strokeWidth="2" />
-                <path d="M12 3V1M12 23V21M3 12H1M23 12H21" stroke="#1B5E20" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </div>
-            <span className="feature-text">14-days<br />Replacement</span>
-          </div>
-          <div className="feature-item">
-            <div className="feature-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1B5E20" />
-              </svg>
-            </div>
-            <span className="feature-text">Expert Care<br />Guidance</span>
-          </div>
-          <div className="feature-item">
-            <div className="feature-icon">
-              <span className="feature-number">10M+</span>
-            </div>
-            <span className="feature-text">Plant Parents<br />Trust Us</span>
-          </div>
-        </div>
       </div>
     </section>
   )
