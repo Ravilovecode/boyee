@@ -281,7 +281,7 @@ const Login = () => {
         <div className="ld-content">
           <div className="ld-form-side">
             <h1 className="ld-title">
-              WELCOME TO <span className="ld-highlight">FLORISTA</span>
+              WELCOME TO <span className="ld-highlight">BOYEE</span>
             </h1>
             <h2 className="ld-subtitle">{isLogin ? 'USER LOGIN' : 'CREATE ACCOUNT'}</h2>
 
