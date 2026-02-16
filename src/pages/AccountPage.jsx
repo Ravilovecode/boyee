@@ -1,6 +1,6 @@
 import Login from '../components/Login'
 import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 function AccountPage() {
   const { user, logout } = useAuth()
@@ -49,6 +49,31 @@ function AccountPage() {
         </div>
         <h2 style={{ margin: '0 0 0.3rem', color: '#1b4332', fontSize: '1.5rem' }}>{user.name}</h2>
         <p style={{ margin: '0 0 1.5rem', color: '#666', fontSize: '0.95rem' }}>{user.email}</p>
+        <Link
+          to="/myorders"
+          style={{
+            display: 'block',
+            margin: '0 0 1rem',
+            color: '#2d6a4f',
+            textDecoration: 'none',
+            fontSize: '1rem',
+            fontWeight: '600',
+            border: '1px solid #2d6a4f',
+            borderRadius: '8px',
+            padding: '0.75rem 2rem',
+            transition: 'background 0.2s, color 0.2s',
+          }}
+          onMouseOver={(e) => {
+            e.target.style.background = '#2d6a4f'
+            e.target.style.color = '#fff'
+          }}
+          onMouseOut={(e) => {
+            e.target.style.background = 'transparent'
+            e.target.style.color = '#2d6a4f'
+          }}
+        >
+          My Orders
+        </Link>
         <button
           onClick={handleLogout}
           style={{

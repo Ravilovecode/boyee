@@ -1,0 +1,121 @@
+.my-orders-section {
+    padding: 2rem 1rem;
+    min-height: 80vh;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.my-orders-section h2 {
+    color: #1B5E20;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.empty-orders {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.shop-now-btn {
+    display: inline-block;
+    background-color: #1B5E20;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    margin-top: 1rem;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.order-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #1B5E20;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.order-id {
+    display: block;
+    font-weight: bold;
+    color: #333;
+}
+
+.order-date {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.view-details-btn {
+    color: #1B5E20;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.view-details-btn:hover {
+    text-decoration: underline;
+}
+
+.order-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-info p {
+    margin: 0.2rem 0;
+    color: #555;
+}
+
+.order-status {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Reusing status badges from OrderDetailsPage.css if imported globally, 
+   otherwise defining here again for safety */
+.status-badge {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-badge.paid {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.unpaid {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+.status-badge.delivered {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.processing {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}

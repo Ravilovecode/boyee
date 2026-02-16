@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 import Navbar from './components/Navbar'
 import BottomNav from './components/BottomNav'
 import './App.css'
@@ -10,27 +11,35 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 const ProductsPage = lazy(() => import('./pages/ProductsPage'))
 const CartPage = lazy(() => import('./pages/CartPage'))
 const AccountPage = lazy(() => import('./pages/AccountPage'))
+const CheckoutPage = lazy(() => import('./pages/Checkout'))
+const OrderDetailsPage = lazy(() => import('./pages/OrderDetailsPage'))
+const MyOrdersPage = lazy(() => import('./pages/MyOrdersPage'))
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="app">
-          <Navbar />
-          <main className="main-content">
-            <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
-              <Routes>
-                <Route path="/" element={<Navigate to="/home" replace />} />
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/account" element={<AccountPage />} />
-              </Routes>
-            </Suspense>
-          </main>
-          <BottomNav />
-        </div>
-      </Router>
+      <CartProvider>
+        <Router>
+          <div className="app">
+            <Navbar />
+            <main className="main-content">
+              <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/home" replace />} />
+                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/products" element={<ProductsPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/account" element={<AccountPage />} />
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/order/:id" element={<OrderDetailsPage />} />
+                  <Route path="/myorders" element={<MyOrdersPage />} />
+                </Routes>
+              </Suspense>
+            </main>
+            <BottomNav />
+          </div>
+        </Router>
+      </CartProvider>
     </AuthProvider>
   )
 }

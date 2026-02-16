@@ -44,7 +44,7 @@ const Navbar = () => {
           <img src={logo} alt="Boyee" className="logo-icon" />
         </Link>
 
-        {/* Search Bar - inline */}
+        {/* Search Bar */}
         <div className="navbar-search-container">
           <form className="search-form" onSubmit={handleSearch}>
             <div className="search-input-wrapper">
@@ -63,14 +63,66 @@ const Navbar = () => {
           </form>
         </div>
 
-        {/* Right side icons */}
-        <div className="navbar-icons">
-          {/* Bag Icon */}
+        {/* Desktop Section: Links, Profile, Cart, Logout */}
+        <div className="desktop-section desktop-only">
+          {/* Nav Links */}
+          <ul className="navbar-links">
+            <li><button onClick={() => handleNavClick('/home')}>Home</button></li>
+            <li><button onClick={() => handleNavClick('/products')}>Products</button></li>
+            <li><button onClick={() => handleNavClick('/myorders')}>My Orders</button></li>
+            <li><button onClick={() => handleNavClick('/account')}>Account</button></li>
+          </ul>
+
+          {/* User Profile (Name + Avatar) */}
+          {user ? (
+            <div className="navbar-profile" onClick={() => handleNavClick('/account')}>
+              <span className="profile-name">{user.name}</span>
+              <div className="profile-avatar">
+                {user.name?.charAt(0).toUpperCase()}
+              </div>
+            </div>
+          ) : (
+            <div className="navbar-profile" onClick={() => handleNavClick('/account')}>
+              <span className="profile-name">Sign In</span>
+              <div className="profile-avatar guest">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+            </div>
+          )}
+
+          {/* Cart Icon */}
+          <button className="bag-btn desktop-bag" onClick={() => navigate('/cart')} aria-label="Cart">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="bag-count">0</span>
+          </button>
+
+          {/* Logout Icon (only when logged in) */}
+          {user && (
+            <button className="logout-icon-btn" onClick={handleLogout} title="Log out">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points="16 17 21 12 16 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/* Mobile Icons (Bag + Hamburger) */}
+        <div className="navbar-icons mobile-only">
+          {/* Bag Icon (Mobile) */}
           <button className="bag-btn" onClick={() => navigate('/cart')} aria-label="Cart">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M3 6H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span className="bag-count">0</span>
           </button>
@@ -132,6 +184,15 @@ const Navbar = () => {
           {/* Nav Links */}
           <ul className="drawer-nav">
             <li>
+              <button onClick={() => handleNavClick('/home')}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 9L12 2L21 9V20C21 20.53 20.79 21.04 20.41 21.41C20.04 21.79 19.53 22 19 22H5C4.47 22 3.96 21.79 3.59 21.41C3.21 21.04 3 20.53 3 20V9Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M9 22V12H15V22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Home
+              </button>
+            </li>
+            <li>
               <button onClick={() => handleNavClick('/products')}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -142,36 +203,28 @@ const Navbar = () => {
               </button>
             </li>
             <li>
-              <button onClick={() => handleNavClick('/home')}>
+              <button onClick={() => handleNavClick('/myorders')}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M14 2V8H20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M16 13H8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M16 17H8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M10 9H8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Features
+                My Orders
               </button>
             </li>
             <li>
-              <button onClick={() => handleNavClick('/home')}>
+              <button onClick={() => handleNavClick('/account')}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <rect x="1" y="3" width="15" height="13" rx="2" stroke="currentColor" strokeWidth="1.8" />
-                  <path d="M16 8L20 6V16L16 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M5 20H22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  <circle cx="9" cy="20" r="2" stroke="currentColor" strokeWidth="1.8" />
-                  <circle cx="18" cy="20" r="2" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M20 21V19C20 17.94 19.58 16.92 18.83 16.17C18.08 15.42 17.06 15 16 15H8C6.94 15 5.92 15.42 5.17 16.17C4.42 16.92 4 17.94 4 19V21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Delivery
-              </button>
-            </li>
-            <li>
-              <button onClick={() => handleNavClick('/home')}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M22 16.92V19.92C22 20.48 21.56 20.93 21 20.97C20.17 21.04 19.35 21 18.55 20.85C16.97 20.55 15.48 19.94 14.16 19.05C12.93 18.23 11.87 17.17 11.05 15.94C10.16 14.62 9.55 13.13 9.25 11.55C9.1 10.75 9.06 9.94 9.13 9.11C9.17 8.55 9.62 8.11 10.18 8.11H13.18C13.66 8.11 14.07 8.47 14.13 8.94C14.19 9.55 14.31 10.14 14.49 10.72C14.63 11.15 14.52 11.62 14.18 11.96L13.09 13.05C13.85 14.39 14.95 15.49 16.29 16.25L17.38 15.16C17.72 14.82 18.19 14.71 18.62 14.85C19.2 15.03 19.79 15.15 20.4 15.21C20.87 15.27 21.23 15.68 21.23 16.16L22 16.92Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                Contacts
+                Account
               </button>
             </li>
           </ul>
 
-          {/* Logout Button (only when logged in) */}
           {/* Spacer pushes logout to bottom */}
           <div className="drawer-spacer"></div>
 
@@ -186,40 +239,6 @@ const Navbar = () => {
                   <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 Log Out
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Desktop-only nav links & auth (hidden on mobile) */}
-        <ul className="navbar-links desktop-only">
-          <li><button onClick={() => handleNavClick('/products')}>Products</button></li>
-          <li><button onClick={() => handleNavClick('/home')}>Features</button></li>
-          <li><button onClick={() => handleNavClick('/home')}>Delivery</button></li>
-          <li><button onClick={() => handleNavClick('/home')}>Contacts</button></li>
-        </ul>
-
-        <div className="navbar-auth desktop-only">
-          {user ? (
-            <>
-              <button className="login-link" onClick={() => handleNavClick('/account')}>
-                {user.name}
-              </button>
-              <span className="divider">|</span>
-              <button className="avatar-btn logout-btn" onClick={handleLogout} title="Log out">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <polyline points="16 17 21 12 16 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="login-link" onClick={() => handleNavClick('/account')}>Log in</button>
-              <span className="divider">|</span>
-              <button className="avatar-btn" onClick={() => handleNavClick('/account')}>
-                <span>O</span>
               </button>
             </>
           )}

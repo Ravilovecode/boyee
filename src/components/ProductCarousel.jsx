@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ProductCarousel.css';
 import galleryBg from '../assets/images/gallery/gallery-background.png';
+// keeping imports for fallbacks or removing if unused
 import leftImg from '../assets/images/gallery/left.png';
 import middleImg from '../assets/images/gallery/middle.png';
 import rightImg from '../assets/images/gallery/right.png';
 import snakePlantImg from '../assets/images/gallery/snake-plant.png';
 import jedePlantImg from '../assets/images/gallery/jede-plant.png';
+import { getAllPlants } from '../services/plantService';
 
 const ProductCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -15,13 +17,31 @@ const ProductCarousel = () => {
   const isScrolling = useRef(false);
   const scrollTimeout = useRef(null);
 
-  const products = [
-    { id: 1, name: 'Chinese Money', price: 220, image: leftImg },
-    { id: 2, name: 'Monstera Deliciosa', price: 244, image: middleImg },
-    { id: 3, name: 'Peace Lily', price: 180, image: rightImg },
-    { id: 4, name: 'Snake Plant', price: 199, image: snakePlantImg },
-    { id: 5, name: 'Jade Plant', price: 165, image: jedePlantImg },
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getAllPlants();
+        const mapped = data.map(p => ({
+          id: p._id,
+          name: p.name,
+          price: p.price || 199,
+          image: p.image
+        }));
+        // Ensure we have enough products for carousel loop or handle it?
+        // For now just set what we have.
+        setProducts(mapped);
+        if (mapped.length > 0) setCurrentIndex(Math.min(1, mapped.length - 1));
+      } catch (e) {
+        console.error("Carousel fetch failed", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const getVisibleProducts = () => {
     const prev = currentIndex === 0 ? null : products[currentIndex - 1];
@@ -57,7 +77,7 @@ const ProductCarousel = () => {
     setIsDragging(false);
     const endX = e.pageX;
     const diff = startX - endX;
-    
+
     // If dragged more than 50px, change slide
     if (diff > 50) {
       handleNext();
@@ -73,7 +93,7 @@ const ProductCarousel = () => {
   const handleTouchEnd = (e) => {
     const endX = e.changedTouches[0].clientX;
     const diff = startX - endX;
-    
+
     // If swiped more than 50px, change slide
     if (diff > 50) {
       handleNext();
@@ -126,6 +146,8 @@ const ProductCarousel = () => {
     return () => el.removeEventListener('wheel', handleWheel);
   }, [products.length]);
 
+  if (loading || products.length === 0) return null; // Or a loading skeleton
+
   return (
     <section className="product-carousel-section" style={{ backgroundImage: `url(${galleryBg})` }}>
       <h2 className="section-heading">Our Top Selling Plants</h2>
@@ -172,14 +194,14 @@ const ProductCarousel = () => {
         {currentIndex > 0 && (
           <button className="carousel-btn carousel-btn-prev" onClick={handlePrev}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         )}
         {currentIndex < products.length - 1 && (
           <button className="carousel-btn carousel-btn-next" onClick={handleNext}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         )}
