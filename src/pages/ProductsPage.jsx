@@ -23,6 +23,7 @@ function ProductsPage() {
       ) : (
         <>
           <Products selectedCategory="Best Selling" title="Bestsellers" />
+          <Products selectedCategory="Indoor" title="Indoor Plants" />
           <Products selectedCategory="Medicinal" title="Medicinal Plants" />
           <Products selectedCategory="Astrology" title="Lucky Plants" />
           <Products selectedCategory="Air Purifying" title="Air Purifying Plants" />

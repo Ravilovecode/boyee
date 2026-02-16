@@ -42,7 +42,11 @@ const PromoCarousel = () => {
                     <div
                         key={slide.id}
                         className={`promo-slide ${index === current ? 'active' : ''}`}
-                        style={{ background: slide.bgColor }}
+                        style={{
+                            background: slide.bgColor,
+                            transform: `translateX(${(index - current) * 100}%)`,
+                            opacity: 1 // Ensure visibility for transform
+                        }}
                     >
                         <div className="promo-content">
                             <h3>{slide.title}</h3>
