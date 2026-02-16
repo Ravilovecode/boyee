@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import loginBg from '../assets/images/login/login-bg.png';
-import { loginUser, registerUser } from '../services/api';
+import { loginUser, registerUser, sendOtpApi, verifyOtpApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
@@ -15,6 +15,8 @@ const Login = () => {
   const [error, setError] = useState('');
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otp, setOtp] = useState('');
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -47,17 +49,32 @@ const Login = () => {
     setLoading(true);
 
     try {
-      let userData;
       if (isLogin) {
-        userData = await loginUser(email, password);
+        const userData = await loginUser(email, password);
+        login(userData);
+        navigate('/home');
       } else {
-        userData = await registerUser(name, email, password);
+        // Signup Flow: Send OTP first
+        await sendOtpApi(email);
+        setShowOtpModal(true);
+        setLoading(false); // Stop loading to allow OTP entry
       }
+    } catch (err) {
+      showErrorSnackbar(err.message || 'Something went wrong');
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setLoading(true);
+    try {
+      await verifyOtpApi(email, otp);
+      // Only register after verification
+      const userData = await registerUser(name, email, password);
       login(userData);
       navigate('/home');
     } catch (err) {
-      showErrorSnackbar(err.message || 'Something went wrong');
-    } finally {
+      showErrorSnackbar(err.message || 'OTP Verification Failed');
       setLoading(false);
     }
   };
@@ -83,6 +100,27 @@ const Login = () => {
           </button>
           <div className="snackbar-progress">
             <div className={`snackbar-progress-bar ${showError ? 'snackbar-progress-animate' : ''}`} />
+          </div>
+        </div>
+      )}
+
+      {/* ====== OTP MODAL ====== */}
+      {showOtpModal && (
+        <div className="otp-modal-overlay">
+          <div className="otp-modal">
+            <h3>Verify OTP</h3>
+            <p>Enter the 6-digit code sent to {email}</p>
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              maxLength="6"
+            />
+            <div className="otp-actions">
+              <button onClick={handleVerifyOtp} disabled={loading}>{loading ? 'Verifying...' : 'Verify'}</button>
+              <button className="cancel-btn" onClick={() => setShowOtpModal(false)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}

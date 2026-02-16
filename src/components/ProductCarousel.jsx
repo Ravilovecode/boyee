@@ -8,6 +8,8 @@ import rightImg from '../assets/images/gallery/right.png';
 import snakePlantImg from '../assets/images/gallery/snake-plant.png';
 import jedePlantImg from '../assets/images/gallery/jede-plant.png';
 import { getAllPlants } from '../services/plantService';
+import { useCart } from '../context/CartContext';
+import { useNotification } from '../context/NotificationContext';
 
 const ProductCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -16,6 +18,9 @@ const ProductCarousel = () => {
   const carouselRef = useRef(null);
   const isScrolling = useRef(false);
   const scrollTimeout = useRef(null);
+
+  const { addToCart } = useCart();
+  const { showNotification } = useNotification();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -211,7 +216,15 @@ const ProductCarousel = () => {
       <div className="featured-product">
         <h2 className="featured-name">{products[currentIndex].name}</h2>
         <p className="featured-price">₹{products[currentIndex].price}</p>
-        <button className="add-to-cart-btn">+ Add to Cart</button>
+        <button
+          className="add-to-cart-btn"
+          onClick={() => {
+            addToCart(products[currentIndex]);
+            showNotification(`${products[currentIndex].name} added to cart!`);
+          }}
+        >
+          + Add to Cart
+        </button>
       </div>
     </section>
   );

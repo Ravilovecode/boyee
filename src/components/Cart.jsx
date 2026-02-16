@@ -5,7 +5,7 @@ import { estimateShipping } from '../services/orderService'
 import './Cart.css'
 
 function Cart() {
-  const { cartItems, removeFromCart, addToCart, clearCart } = useCart();
+  const { cartItems, removeFromCart, addToCart, decreaseFromCart, clearCart } = useCart();
   const navigate = useNavigate();
 
   const [pincode, setPincode] = useState('');
@@ -107,8 +107,10 @@ function Cart() {
                   </div>
 
                   <div className="cart-card-actions">
-                    <div className="quantity-badge">
-                      Qty: {item.qty}
+                    <div className="quantity-controls">
+                      <button className="qty-btn" onClick={() => decreaseFromCart(item.id)}>−</button>
+                      <span className="qty-value">{item.qty}</span>
+                      <button className="qty-btn" onClick={() => addToCart(item)}>+</button>
                     </div>
                     <button
                       className="remove-btn"
@@ -138,7 +140,7 @@ function Cart() {
 
             {/* Shipping Estimator */}
             <div className="shipping-estimator">
-              <p className="estimator-label">Estimate Shipping</p>
+              <p className="estimator-label">Check for availability</p>
               <div className="estimator-input-group">
                 <input
                   type="text"

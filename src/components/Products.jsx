@@ -8,11 +8,13 @@ import './Products.css'
 
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { useNotification } from '../context/NotificationContext';
 import { getAllPlants } from '../services/plantService';
 import './Products.css';
 
 function Products() {
   const { addToCart } = useCart();
+  const { showNotification } = useNotification();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -111,7 +113,10 @@ function Products() {
                 {/* View Product Button */}
                 <button
                   className="view-product-btn"
-                  onClick={() => addToCart(product)}
+                  onClick={() => {
+                    addToCart(product);
+                    showNotification(`${product.name} added to cart!`);
+                  }}
                 >
                   ADD TO CART
                 </button>

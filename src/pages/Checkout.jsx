@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createOrder, createRazorpayOrder, payOrder, estimateShipping } from '../services/orderService';
 import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext'; // Import Notification
+import Confetti from '../components/Confetti'; // Import Confetti
 import './Checkout.css';
 
 const Checkout = () => {
@@ -17,6 +19,8 @@ const Checkout = () => {
     const [city, setCity] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [country, setCountry] = useState('India');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [landmark, setLandmark] = useState('');
 
     const [shippingPrice, setShippingPrice] = useState(0);
     const [taxPrice, setTaxPrice] = useState(0);
@@ -26,6 +30,8 @@ const Checkout = () => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [showConfetti, setShowConfetti] = useState(false); // Confetti state
+    const { showNotification } = useNotification(); // Notification hook
 
 
     useEffect(() => {
@@ -77,8 +83,13 @@ const Checkout = () => {
     };
 
     const handlePayment = async () => {
-        if (!name || !address || !city || !postalCode || !country) {
-            setError('Please fill in all shipping details');
+        if (!name || !address || !city || !postalCode || !country || !phoneNumber) {
+            setError('Please fill in all shipping details including phone number');
+            return;
+        }
+
+        if (phoneNumber.length < 10) {
+            setError('Please enter a valid 10-digit phone number');
             return;
         }
 
@@ -92,7 +103,15 @@ const Checkout = () => {
                     product: item._id || item.id, // Ensure product ID is mapped to 'product'
                     _id: undefined, // Remove _id if it was there to avoid confusion? Or just keep it.
                 })),
-                shippingAddress: { fullName: name, address, city, postalCode, country },
+                shippingAddress: {
+                    fullName: name,
+                    address,
+                    city,
+                    postalCode,
+                    country,
+                    phoneNumber,
+                    landmark
+                },
                 paymentMethod: 'Razorpay',
                 itemsPrice,
                 taxPrice,
@@ -126,9 +145,15 @@ const Checkout = () => {
 
                         });
 
+                        console.log("PAYMENT SUCESS: Handler called");
                         setLoading(false);
-                        setLoading(false);
-                        navigate(`/order/${finalOrder._id}`); // Redirect to order details page
+                        setShowConfetti(true);
+                        console.log("Confetti state set to true");
+
+                        // Delay redirect to show animation
+                        setTimeout(() => {
+                            navigate('/myorders');
+                        }, 4000);
                     } catch (err) {
                         setError('Payment success but failed to create order: ' + err.message);
                         setLoading(false);
@@ -176,6 +201,23 @@ const Checkout = () => {
 
     return (
         <section className="checkout-section">
+            {showConfetti && (
+                <div className="order-success-overlay">
+                    <Confetti />
+                    <div className="success-content">
+                        <div className="success-icon">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 11.08V12A10 10 0 1 1 15.93 6" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M22 4L12 14.01L9 11.01" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                        <h2>Congratulations!</h2>
+                        <p>Your order has been placed successfully.</p>
+                        <p className="redirect-text">Redirecting to your orders...</p>
+                    </div>
+                </div>
+            )}
+
             <div className="checkout-container">
                 <h2 className="checkout-title">Checkout</h2>
                 {error && <div className="error-message">{error}</div>}
@@ -218,11 +260,30 @@ const Checkout = () => {
                             <small>Enter postal code to estimate shipping</small>
                         </div>
                         <div className="form-group">
+                            <label>Phone Number</label>
+                            <input
+                                type="tel"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                placeholder="10-digit mobile number"
+                                maxLength="10"
+                            />
+                        </div>
+                        <div className="form-group">
                             <label>Country</label>
                             <input
                                 type="text"
                                 value={country}
                                 onChange={(e) => setCountry(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Landmark (Optional)</label>
+                            <input
+                                type="text"
+                                value={landmark}
+                                onChange={(e) => setLandmark(e.target.value)}
+                                placeholder="Near park, behind temple, etc."
                             />
                         </div>
                     </div>
