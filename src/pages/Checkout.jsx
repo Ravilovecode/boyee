@@ -17,16 +17,16 @@ const Checkout = () => {
     const [name, setName] = useState(user?.name || '');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
-    const [postalCode, setPostalCode] = useState('');
+    const [postalCode, setPostalCode] = useState(location.state?.pincode || '');
     const [country, setCountry] = useState('India');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [landmark, setLandmark] = useState('');
 
-    const [shippingPrice, setShippingPrice] = useState(0);
+    const [shippingPrice, setShippingPrice] = useState(location.state?.shippingCost || 0);
     const [taxPrice, setTaxPrice] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [itemsPrice, setItemsPrice] = useState(0);
-    const [tat, setTat] = useState(null);
+    const [tat, setTat] = useState(location.state?.tat || null);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -48,8 +48,8 @@ const Checkout = () => {
         const tax = itemsTotal * 0.18;
         setTaxPrice(tax);
 
-        // Initial total without shipping
-        setTotalPrice(itemsTotal + tax);
+        // Initial total with shipping if available
+        setTotalPrice(itemsTotal + tax + (location.state?.shippingCost || 0));
 
     }, [cartItems, user, navigate]);
 

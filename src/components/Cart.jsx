@@ -175,10 +175,17 @@ function Cart() {
 
             <button
               className="checkout-btn"
-              onClick={() => navigate('/checkout', { state: { cartItems } })}
+              onClick={() => navigate('/checkout', { state: { cartItems, pincode, shippingCost, tat } })}
+              disabled={shippingCost === null}
+              style={{ opacity: shippingCost === null ? 0.6 : 1, cursor: shippingCost === null ? 'not-allowed' : 'pointer' }}
             >
               Proceed to Checkout
             </button>
+            {shippingCost === null && (
+              <p style={{ color: '#d32f2f', fontSize: '0.9rem', marginTop: '8px' }}>
+                Please check pincode availability to proceed.
+              </p>
+            )}
 
             <button
               className="continue-shopping-btn"
