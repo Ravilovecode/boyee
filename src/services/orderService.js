@@ -65,9 +65,17 @@ export const createRazorpayOrder = async (amount) => {
 };
 
 export const estimateShipping = async (shippingData) => {
+    const user = JSON.parse(localStorage.getItem('boyeeUser'));
+    const headers = {
+        'Content-Type': 'application/json',
+    };
+    if (user) {
+        headers['Authorization'] = `Bearer ${user.token}`;
+    }
+
     const res = await fetch(`${API_URL}/api/orders/shipping/estimate`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: headers,
         body: JSON.stringify(shippingData),
     });
     if (!res.ok) throw new Error('Failed to estimate shipping');

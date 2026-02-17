@@ -5,8 +5,8 @@ import loginBg from '../assets/images/login/login-bg.png';
 import { loginUser, registerUser, sendOtpApi, verifyOtpApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
-const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
+const Login = ({ initialIsLogin = true, onSuccess }) => {
+  const [isLogin, setIsLogin] = useState(initialIsLogin);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -53,7 +53,11 @@ const Login = () => {
       if (isLogin) {
         const userData = await loginUser(email, password);
         login(userData);
-        navigate('/home');
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          navigate('/home');
+        }
       } else {
         // Signup Flow: Send OTP first
         await sendOtpApi(email);
@@ -74,7 +78,11 @@ const Login = () => {
       // Only register after verification
       const userData = await registerUser(name, email, password);
       login(userData);
-      navigate('/home');
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/home');
+      }
     } catch (err) {
       showErrorSnackbar(err.message || 'OTP Verification Failed');
       setLoading(false);

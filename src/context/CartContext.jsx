@@ -5,14 +5,17 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState([]);
-
-    useEffect(() => {
-        const storedCart = localStorage.getItem('boyeeCart');
-        if (storedCart) {
-            setCartItems(JSON.parse(storedCart));
+    const [cartItems, setCartItems] = useState(() => {
+        try {
+            const storedCart = localStorage.getItem('boyeeCart');
+            return storedCart ? JSON.parse(storedCart) : [];
+        } catch (error) {
+            console.error("Failed to parse cart from local storage", error);
+            return [];
         }
-    }, []);
+    });
+
+    // Removed the "load" useEffect as it is now handled in useState lazy init
 
     useEffect(() => {
         localStorage.setItem('boyeeCart', JSON.stringify(cartItems));

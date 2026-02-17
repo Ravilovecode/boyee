@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createOrder, createRazorpayOrder, payOrder, estimateShipping } from '../services/orderService';
+import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext'; // Import Notification
 import Confetti from '../components/Confetti'; // Import Confetti
@@ -10,9 +11,25 @@ const Checkout = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuth();
+    const { cartItems: contextCartItems } = useCart();
 
-    // Check if cartItems are passed via state, otherwise redirect or fetch from context/storage
-    const [cartItems] = useState(location.state?.cartItems || []);
+    // Check if coming from "Buy Now" flow via query param
+    const searchParams = new URLSearchParams(location.search);
+    const isBuyNow = searchParams.get('source') === 'buynow';
+
+    const cartItems = useMemo(() => {
+        if (isBuyNow) {
+            try {
+                const storedBuyNow = localStorage.getItem('boyeeBuyNowItem');
+                return storedBuyNow ? JSON.parse(storedBuyNow) : [];
+            } catch (e) {
+                console.error("Failed to load buy now item", e);
+                return [];
+            }
+        } else {
+            return location.state?.cartItems || contextCartItems;
+        }
+    }, [isBuyNow, location.state, contextCartItems]);
 
     const [name, setName] = useState(user?.name || '');
     const [address, setAddress] = useState('');
@@ -35,11 +52,6 @@ const Checkout = () => {
 
 
     useEffect(() => {
-        if (!user) {
-            navigate('/login');
-            return;
-        }
-
         // Calculate items price
         const itemsTotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
         setItemsPrice(itemsTotal);
@@ -51,12 +63,16 @@ const Checkout = () => {
         // Initial total with shipping if available
         setTotalPrice(itemsTotal + tax + (location.state?.shippingCost || 0));
 
-    }, [cartItems, user, navigate]);
+    }, [cartItems, location.state]);
 
 
-    const handleShippingEstimate = async () => {
-        if (!postalCode) {
-            setError('Please enter postal code for shipping estimate');
+    const handleShippingEstimate = async (pincodeOverride) => {
+        const pin = typeof pincodeOverride === 'string' ? pincodeOverride : postalCode;
+
+        if (!pin || pin.length < 6) {
+            // Don't show error while typing, just return or clear
+            // But if called explicitly (blur), maybe show error?
+            // For now, if length is not sufficient, do nothing or clear shipping
             return;
         }
 
@@ -66,7 +82,7 @@ const Checkout = () => {
 
             const data = await estimateShipping({
                 pickup_postcode: '110001', // Example warehouse pincode
-                delivery_postcode: postalCode,
+                delivery_postcode: pin,
                 weight: weight,
                 cod: 0
             });
@@ -76,9 +92,12 @@ const Checkout = () => {
             setTat(data.tat); // Set TAT
             setError(null);
         } catch (err) {
-            setError('Could not estimate shipping. Defaulting to flat rate.');
-            setShippingPrice(100);
-            setTotalPrice(itemsPrice + taxPrice + 100);
+            console.error("Shipping estimate failed:", err);
+            setError('Could not estimate shipping. Please check pincode.');
+            // Removed default defaulting to 100 as per user request
+            setShippingPrice(0);
+            // setTotalPrice(itemsPrice + taxPrice + 0); // Optional: reset total or leave as is? Better to recalculate without shipping.
+            setTotalPrice(itemsPrice + taxPrice);
         }
     };
 
@@ -195,9 +214,14 @@ const Checkout = () => {
         }
     }, []);
 
-    if (cartItems.length === 0) {
-        return <div className="container" style={{ padding: '120px 20px', textAlign: 'center' }}>Your cart is empty. <button onClick={() => navigate('/products')} style={{ marginLeft: '10px', padding: '5px 10px', cursor: 'pointer' }}>Go Shopping</button></div>
-    }
+    const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+
+    const toggleSummary = () => {
+        setIsSummaryOpen(!isSummaryOpen);
+    };
+
+    // Removed early return to prevent blank page on refresh
+    // if (cartItems.length === 0) { ... }
 
     return (
         <section className="checkout-section">
@@ -254,8 +278,13 @@ const Checkout = () => {
                             <input
                                 type="text"
                                 value={postalCode}
-                                onChange={(e) => setPostalCode(e.target.value)}
-                                onBlur={handleShippingEstimate} // Estimate on blur
+                                onChange={(e) => {
+                                    setPostalCode(e.target.value);
+                                    if (e.target.value.length === 6) {
+                                        handleShippingEstimate(e.target.value);
+                                    }
+                                }}
+                                onBlur={() => handleShippingEstimate()} // Estimate on blur
                             />
                             <small>Enter postal code to estimate shipping</small>
                         </div>
@@ -288,36 +317,92 @@ const Checkout = () => {
                         </div>
                     </div>
 
-                    <div className="order-summary">
-                        <h3>Order Summary</h3>
-                        <div className="summary-row">
-                            <span>Items:</span>
-                            <span>₹{itemsPrice.toFixed(2)}</span>
-                        </div>
-                        <div className="summary-row">
-                            <span>Tax:</span>
-                            <span>₹{taxPrice.toFixed(2)}</span>
-                        </div>
-                        <div className="summary-row">
-                            <span>Shipping:</span>
-                            <div style={{ textAlign: 'right' }}>
-                                <span>₹{shippingPrice.toFixed(2)}</span>
-                                {tat && <div style={{ fontSize: '0.8rem', color: '#666' }}>({tat})</div>}
+                    <div className="order-summary-container">
+                        <div className="order-summary-header" onClick={toggleSummary}>
+                            <div className="header-left">
+                                <span className="summary-label">
+                                    {isSummaryOpen ? 'Hide order summary' : 'Show order summary'}
+                                    <span className={`summary-chevron ${isSummaryOpen ? 'open' : ''}`}>▼</span>
+                                </span>
+                                {!isSummaryOpen && (
+                                    <span className="header-total">₹{totalPrice.toFixed(2)}</span>
+                                )}
                             </div>
                         </div>
-                        <div className="summary-divider"></div>
-                        <div className="summary-row total">
-                            <span>Total:</span>
-                            <span>₹{totalPrice.toFixed(2)}</span>
-                        </div>
 
-                        <button
-                            className="place-order-btn"
-                            onClick={handlePayment}
-                            disabled={loading}
-                        >
-                            {loading ? 'Processing...' : 'Place Order'}
-                        </button>
+                        {isSummaryOpen && (
+                            <div className="order-summary-content">
+                                {/* Items List */}
+                                <div className="summary-items-list">
+                                    {cartItems.map((item) => (
+                                        <div key={item.id || item._id} className="summary-item">
+                                            <div className="item-image-badge">
+                                                <img src={item.image} alt={item.name} />
+                                            </div>
+                                            <div className="item-info">
+                                                <p className="item-name">{item.name}</p>
+                                                <p className="item-variant">{item.variant || 'Standard'}</p>
+                                            </div>
+                                            <div className="item-price">₹{(item.price * item.qty).toFixed(2)}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Login Banner for Guest */}
+                                {!user && (
+                                    <div className="login-banner">
+                                        <div className="login-banner-content">
+                                            <div className="login-banner-icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4" /><path d="M4 6v12c0 1.1.9 2 2 2h14v-4" /><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z" /></svg>
+                                            </div>
+                                            <div className="login-banner-text">
+                                                <p>Login to view and apply rewards</p>
+                                            </div>
+                                        </div>
+                                        <button className="login-banner-btn" onClick={() => navigate('/login', { state: { from: '/checkout' } })}>Login</button>
+                                    </div>
+                                )}
+
+                                <div className="summary-divider"></div>
+
+                                <div className="summary-totals">
+                                    <div className="summary-row">
+                                        <span>Subtotal</span>
+                                        <span>₹{itemsPrice.toFixed(2)}</span>
+                                    </div>
+                                    <div className="summary-row">
+                                        <span>Shipping</span>
+                                        <div style={{ textAlign: 'right' }}>
+                                            {shippingPrice > 0 ? (
+                                                <span>₹{shippingPrice.toFixed(2)}</span>
+                                            ) : (
+                                                <span className="enter-shipping-text">Enter shipping address</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="summary-divider"></div>
+
+                                <div className="summary-row total" style={{ alignItems: 'center' }}>
+                                    <span style={{ fontSize: '1.25rem', fontWeight: 700 }}>Total</span>
+                                    <div className="total-right">
+                                        <span className="currency-code">INR</span>
+                                        <span className="final-price">₹{totalPrice.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div style={{ padding: '0 24px 24px 24px' }}>
+                            <button
+                                className="pay-now-btn"
+                                onClick={handlePayment}
+                                disabled={loading}
+                            >
+                                {loading ? 'Processing...' : 'Pay now'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

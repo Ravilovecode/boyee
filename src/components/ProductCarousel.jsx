@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './ProductCarousel.css';
 import galleryBg from '../assets/images/gallery/gallery-background.png';
 // keeping imports for fallbacks or removing if unused
@@ -18,6 +19,7 @@ const ProductCarousel = () => {
   const carouselRef = useRef(null);
   const isScrolling = useRef(false);
   const scrollTimeout = useRef(null);
+  const navigate = useNavigate();
 
   const { addToCart } = useCart();
   const { showNotification } = useNotification();
@@ -181,6 +183,7 @@ const ProductCarousel = () => {
                 onClick={() => {
                   if (index === 0) handlePrev();
                   if (index === 2) handleNext();
+                  if (index === 1) navigate(`/product/${product.id}`);
                 }}
               >
                 <div className="product-image-wrapper">
@@ -214,7 +217,11 @@ const ProductCarousel = () => {
 
       {/* Featured Product Details */}
       <div className="featured-product">
-        <h2 className="featured-name">{products[currentIndex].name}</h2>
+        <h2 className="featured-name">
+          <Link to={`/product/${products[currentIndex].id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            {products[currentIndex].name}
+          </Link>
+        </h2>
         <p className="featured-price">₹{products[currentIndex].price}</p>
         <button
           className="add-to-cart-btn"

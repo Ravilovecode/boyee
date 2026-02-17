@@ -7,6 +7,7 @@ import './Products.css'
 // import rightPlant from '../assets/images/gallery/right.png'
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
 import { getAllPlants } from '../services/plantService';
@@ -88,11 +89,13 @@ function Products({ selectedCategory, title, showViewAll = true }) {
                 </span>
 
                 {/* Product Image */}
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="product-img"
-                />
+                <Link to={`/product/${product._id}`}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="product-img"
+                  />
+                </Link>
 
                 {/* Rating Badge */}
                 <div className="product-rating">
@@ -105,7 +108,11 @@ function Products({ selectedCategory, title, showViewAll = true }) {
 
               {/* Product Info */}
               <div className="product-info">
-                <h3 className="product-name">{product.name}</h3>
+                <h3 className="product-name">
+                  <Link to={`/product/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {product.name}
+                  </Link>
+                </h3>
 
                 {/* Tags */}
                 <div className="product-tags">

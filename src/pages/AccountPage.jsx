@@ -1,6 +1,6 @@
 import Login from '../components/Login'
 import { useAuth } from '../context/AuthContext'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 
 function AccountPage() {
   const { user, logout } = useAuth()
@@ -11,8 +11,16 @@ function AccountPage() {
     navigate('/home')
   }
 
+  const location = useLocation();
+
   if (!user) {
-    return <Login />
+    return <Login
+      initialIsLogin={!location.state?.showSignup}
+      onSuccess={() => {
+        const from = location.state?.from || '/home';
+        navigate(from, { replace: true });
+      }}
+    />
   }
 
   return (

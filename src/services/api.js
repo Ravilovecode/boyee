@@ -5,7 +5,8 @@ const ERROR_MESSAGES = {
     INVALID_CREDENTIALS: 'The email or password you entered is incorrect. Please try again.',
     USER_ALREADY_EXISTS: 'An account with this email already exists. Please login instead.',
     INVALID_USER_DATA: 'Please check your information and try again.',
-    USER_NOT_FOUND: 'Account not found. Please check your email or sign up.',
+    USER_NOT_FOUND: 'no account with this email please signup for new account',
+    WRONG_PASSWORD: 'password is wrong please enter correct password',
     UNKNOWN_ERROR: 'Something went wrong. Please try again later.',
 };
 

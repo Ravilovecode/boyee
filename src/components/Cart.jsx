@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { estimateShipping } from '../services/orderService'
+import { useAuth } from '../context/AuthContext';
 import './Cart.css'
 
 function Cart() {
   const { cartItems, removeFromCart, addToCart, decreaseFromCart, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [pincode, setPincode] = useState('');
@@ -175,7 +177,15 @@ function Cart() {
 
             <button
               className="checkout-btn"
-              onClick={() => navigate('/checkout', { state: { cartItems, pincode, shippingCost, tat } })}
+              onClick={() => {
+                if (cartItems.length > 0 && shippingCost !== null) {
+                  if (user) {
+                    navigate('/checkout', { state: { cartItems, pincode, shippingCost, tat } });
+                  } else {
+                    navigate('/login', { state: { from: '/cart' } });
+                  }
+                }
+              }}
               disabled={shippingCost === null}
               style={{ opacity: shippingCost === null ? 0.6 : 1, cursor: shippingCost === null ? 'not-allowed' : 'pointer' }}
             >

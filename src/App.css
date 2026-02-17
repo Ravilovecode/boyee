@@ -1,13 +1,14 @@
 .app {
   width: 100%;
   min-height: 100vh;
-  background: #2C2C2C;
+  background: #ffffff;
   position: relative;
 }
 
 .main-content {
   min-height: 100vh;
-  padding-bottom: 80px; /* Space for bottom nav */
+  padding-bottom: 80px;
+  /* Space for bottom nav */
 }
 
 @media (min-width: 769px) {

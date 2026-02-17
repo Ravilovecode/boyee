@@ -58,6 +58,10 @@ const BottomNav = () => {
     return location.pathname === path || (location.pathname === '/' && path === '/home');
   };
 
+  if (location.pathname.startsWith('/product/')) {
+    return null;
+  }
+
   return (
     <nav className="bottom-nav">
       <div className="bottom-nav-container">
