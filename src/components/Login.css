@@ -499,6 +499,21 @@
   }
 }
 
+/* Modal Mode Overrides */
+.login-mobile.modal-mode {
+  min-height: auto !important;
+  background: transparent !important;
+  padding: 0 !important;
+  width: 100%;
+  display: flex !important;
+}
+
+.login-mobile.modal-mode .login-card {
+  box-shadow: none !important;
+  width: 100%;
+  max-width: 100%;
+}
+
 @media (max-width: 420px) {
   .login-card-image {
     height: 170px;

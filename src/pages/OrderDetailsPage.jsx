@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getOrderById } from '../services/orderService';
+import Loader from '../components/Loader';
 import './OrderDetailsPage.css';
 
 const OrderDetailsPage = () => {
@@ -28,7 +29,7 @@ const OrderDetailsPage = () => {
         if (id) fetchOrder();
     }, [id]);
 
-    if (loading) return <div className="loading-container">Loading order details...</div>;
+    if (loading) return <Loader />;
     if (error) return <div className="error-container">{error}</div>;
     if (!order) return <div className="error-container">Order not found</div>;
 

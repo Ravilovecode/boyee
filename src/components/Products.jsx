@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
 import { getAllPlants } from '../services/plantService';
+import Loader from './Loader';
 import './Products.css';
 
 function Products({ selectedCategory, title, showViewAll = true }) {
@@ -56,7 +57,7 @@ function Products({ selectedCategory, title, showViewAll = true }) {
     fetchProducts();
   }, [selectedCategory]);
 
-  if (loading) return <div className="products-container" style={{ padding: '20px' }}><p>Loading...</p></div>;
+  if (loading) return <Loader />;
   if (error) return <div className="products-container"><p>{error}</p></div>;
   // If no products in this category (and it's a section), maybe hide it?
   if (products.length === 0) return null;

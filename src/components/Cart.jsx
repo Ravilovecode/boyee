@@ -179,11 +179,7 @@ function Cart() {
               className="checkout-btn"
               onClick={() => {
                 if (cartItems.length > 0 && shippingCost !== null) {
-                  if (user) {
-                    navigate('/checkout', { state: { cartItems, pincode, shippingCost, tat } });
-                  } else {
-                    navigate('/login', { state: { from: '/cart' } });
-                  }
+                  navigate('/checkout', { state: { cartItems, pincode, shippingCost, tat } });
                 }
               }}
               disabled={shippingCost === null}

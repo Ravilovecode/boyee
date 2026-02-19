@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext'; // Import Notification
 import Confetti from '../components/Confetti'; // Import Confetti
+import Login from '../components/Login';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -48,6 +49,8 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showConfetti, setShowConfetti] = useState(false); // Confetti state
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [authMode, setAuthMode] = useState('select'); // 'select', 'login', 'signup'
     const { showNotification } = useNotification(); // Notification hook
 
 
@@ -109,6 +112,12 @@ const Checkout = () => {
 
         if (phoneNumber.length < 10) {
             setError('Please enter a valid 10-digit phone number');
+            return;
+        }
+
+        if (!user) {
+            setAuthMode('select');
+            setShowAuthModal(true);
             return;
         }
 
@@ -185,6 +194,11 @@ const Checkout = () => {
                 },
                 theme: {
                     color: "#3399cc"
+                },
+                modal: {
+                    ondismiss: function () {
+                        setLoading(false);
+                    }
                 }
             };
 
@@ -238,6 +252,41 @@ const Checkout = () => {
                         <h2>Congratulations!</h2>
                         <p>Your order has been placed successfully.</p>
                         <p className="redirect-text">Redirecting to your orders...</p>
+                    </div>
+                </div>
+            )}
+
+            {showAuthModal && (
+                <div className="auth-modal-overlay">
+                    <div className="auth-modal-content">
+                        <button className="auth-modal-close" onClick={() => setShowAuthModal(false)}>×</button>
+
+                        {authMode === 'select' ? (
+                            <div className="auth-selection-container">
+                                <h3>Please Log In to Continue</h3>
+                                <p>You need an account to complete your purchase and track you order.</p>
+                                <div className="auth-selection-buttons">
+                                    <button
+                                        className="auth-select-btn login"
+                                        onClick={() => setAuthMode('login')}
+                                    >
+                                        Log In
+                                    </button>
+                                    <button
+                                        className="auth-select-btn signup"
+                                        onClick={() => setAuthMode('signup')}
+                                    >
+                                        Sign Up
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <Login
+                                initialIsLogin={authMode === 'login'}
+                                isModal={true}
+                                onSuccess={() => setShowAuthModal(false)}
+                            />
+                        )}
                     </div>
                 </div>
             )}

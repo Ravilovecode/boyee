@@ -11,6 +11,7 @@ import jedePlantImg from '../assets/images/gallery/jede-plant.png';
 import { getAllPlants } from '../services/plantService';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
+import Loader from './Loader';
 
 const ProductCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
@@ -153,7 +154,8 @@ const ProductCarousel = () => {
     return () => el.removeEventListener('wheel', handleWheel);
   }, [products.length]);
 
-  if (loading || products.length === 0) return null; // Or a loading skeleton
+  if (loading) return <Loader />;
+  if (products.length === 0) return null;
 
   return (
     <section className="product-carousel-section" style={{ backgroundImage: `url(${galleryBg})` }}>

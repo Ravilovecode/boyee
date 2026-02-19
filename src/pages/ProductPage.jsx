@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { getPlantById } from '../services/plantService';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
+import Loader from '../components/Loader';
 import './ProductPage.css';
 
 const ProductPage = () => {
@@ -75,7 +76,7 @@ const ProductPage = () => {
         }
     };
 
-    if (loading) return <div className="loading-container">Loading...</div>;
+    if (loading) return <Loader />;
     if (error) return <div className="error-container">{error} <button onClick={() => navigate('/products')}>Go Back</button></div>;
     if (!product) return null;
 

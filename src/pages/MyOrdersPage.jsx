@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getMyOrders } from '../services/orderService';
+import Loader from '../components/Loader';
 import './MyOrdersPage.css';
 
 const MyOrdersPage = () => {
@@ -23,7 +24,7 @@ const MyOrdersPage = () => {
         fetchOrders();
     }, []);
 
-    if (loading) return <div className="loading-container">Loading your orders...</div>;
+    if (loading) return <Loader />;
     if (error) return <div className="error-container">{error}</div>;
 
     return (

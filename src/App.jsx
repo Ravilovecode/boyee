@@ -6,6 +6,7 @@ import { NotificationProvider } from './context/NotificationContext'
 import Navbar from './components/Navbar'
 import BottomNav from './components/BottomNav'
 import './App.css'
+import Loader from './components/Loader'
 
 // Lazy load pages — each becomes a separate JS chunk
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -26,7 +27,7 @@ function App() {
             <div className="app">
               <Navbar />
               <main className="main-content">
-                <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
+                <Suspense fallback={<Loader />}>
                   <Routes>
                     <Route path="/" element={<Navigate to="/home" replace />} />
                     <Route path="/home" element={<HomePage />} />

@@ -5,7 +5,7 @@ import loginBg from '../assets/images/login/login-bg.png';
 import { loginUser, registerUser, sendOtpApi, verifyOtpApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
-const Login = ({ initialIsLogin = true, onSuccess }) => {
+const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
   const [isLogin, setIsLogin] = useState(initialIsLogin);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -193,7 +193,7 @@ const Login = ({ initialIsLogin = true, onSuccess }) => {
       )}
 
       {/* ============ MOBILE LAYOUT (card style) ============ */}
-      <div className="login-mobile">
+      <div className={`login-mobile ${isModal ? 'modal-mode' : ''}`} style={isModal ? { display: 'flex' } : {}}>
         <div className="login-corner-decoration"></div>
 
         <div className="login-card">
@@ -273,62 +273,64 @@ const Login = ({ initialIsLogin = true, onSuccess }) => {
       </div>
 
       {/* ============ DESKTOP LAYOUT (full-width Florista style) ============ */}
-      <div className="login-desktop">
-        <nav className="ld-nav">
-          <Link to="/home" className="ld-nav-link ld-active">HOME</Link>
-          <div className="ld-nav-center">
-            <Link to="/products" className="ld-nav-link">PRODUCTS</Link>
-            <span className="ld-nav-link">SERVICES</span>
-            <span className="ld-nav-link">ABOUT US</span>
-            <span className="ld-nav-link">CATALOGUE</span>
-            <span className="ld-nav-link">LOGIN</span>
-          </div>
-          <span className="ld-nav-link ld-contact">CONTACT</span>
-        </nav>
+      {!isModal && (
+        <div className="login-desktop">
+          <nav className="ld-nav">
+            <Link to="/home" className="ld-nav-link ld-active">HOME</Link>
+            <div className="ld-nav-center">
+              <Link to="/products" className="ld-nav-link">PRODUCTS</Link>
+              <span className="ld-nav-link">SERVICES</span>
+              <span className="ld-nav-link">ABOUT US</span>
+              <span className="ld-nav-link">CATALOGUE</span>
+              <span className="ld-nav-link">LOGIN</span>
+            </div>
+            <span className="ld-nav-link ld-contact">CONTACT</span>
+          </nav>
 
-        <div className="ld-content">
-          <div className="ld-form-side">
-            <h1 className="ld-title">
-              WELCOME TO <span className="ld-highlight">BOYEE</span>
-            </h1>
-            <h2 className="ld-subtitle">{isLogin ? 'USER LOGIN' : 'CREATE ACCOUNT'}</h2>
+          <div className="ld-content">
+            <div className="ld-form-side">
+              <h1 className="ld-title">
+                WELCOME TO <span className="ld-highlight">BOYEE</span>
+              </h1>
+              <h2 className="ld-subtitle">{isLogin ? 'USER LOGIN' : 'CREATE ACCOUNT'}</h2>
 
-            <form className="ld-form" onSubmit={handleSubmit}>
-              {!isLogin && (
-                <input type="text" placeholder="full name" value={name} onChange={(e) => setName(e.target.value)} className="ld-input" required />
-              )}
-              <input type="email" placeholder="email address" value={email} onChange={(e) => setEmail(e.target.value)} className="ld-input" required />
-              <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} className="ld-input" required />
+              <form className="ld-form" onSubmit={handleSubmit}>
+                {!isLogin && (
+                  <input type="text" placeholder="full name" value={name} onChange={(e) => setName(e.target.value)} className="ld-input" required />
+                )}
+                <input type="email" placeholder="email address" value={email} onChange={(e) => setEmail(e.target.value)} className="ld-input" required />
+                <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} className="ld-input" required />
 
-              {isLogin && (
-                <div className="ld-options">
-                  <label className="ld-remember">
-                    <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                    <span className="ld-check">✔</span> REMEMBER
-                  </label>
-                  <button type="button" className="ld-forgot">FORGOT PASSWORD?</button>
-                </div>
-              )}
+                {isLogin && (
+                  <div className="ld-options">
+                    <label className="ld-remember">
+                      <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                      <span className="ld-check">✔</span> REMEMBER
+                    </label>
+                    <button type="button" className="ld-forgot">FORGOT PASSWORD?</button>
+                  </div>
+                )}
 
-              <button type="submit" className="ld-login-btn" disabled={loading}>
-                {loading ? (<><span className="btn-spinner" /><span>PLEASE WAIT...</span></>) : (isLogin ? 'LOGIN' : 'SIGN UP')}
-              </button>
-            </form>
+                <button type="submit" className="ld-login-btn" disabled={loading}>
+                  {loading ? (<><span className="btn-spinner" /><span>PLEASE WAIT...</span></>) : (isLogin ? 'LOGIN' : 'SIGN UP')}
+                </button>
+              </form>
 
-            <p className="ld-switch">
-              {isLogin ? (
-                <>Don't have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(false); dismissError(); }}>Sign Up</button></>
-              ) : (
-                <>Already have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(true); dismissError(); }}>Login</button></>
-              )}
-            </p>
-          </div>
+              <p className="ld-switch">
+                {isLogin ? (
+                  <>Don't have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(false); dismissError(); }}>Sign Up</button></>
+                ) : (
+                  <>Already have an account?{' '}<button type="button" className="switch-link" onClick={() => { setIsLogin(true); dismissError(); }}>Login</button></>
+                )}
+              </p>
+            </div>
 
-          <div className="ld-image-side">
-            <img src={loginBg} alt="Florista" className="ld-bg-img" />
+            <div className="ld-image-side">
+              <img src={loginBg} alt="Florista" className="ld-bg-img" />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
     </div>
   );

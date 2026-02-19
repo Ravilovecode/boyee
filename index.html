@@ -17,7 +17,48 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <style>
+      .initial-loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+      }
+
+      .initial-loader-logo {
+        width: 150px;
+        height: auto;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+
+        50% {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+
+        100% {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+      }
+    </style>
+    <div class="initial-loader-container">
+      <img src="/logo.png" alt="Boyee Loading..." class="initial-loader-logo" />
+    </div>
+  </div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 
