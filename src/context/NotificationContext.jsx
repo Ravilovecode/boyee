@@ -32,8 +32,10 @@ export const NotificationProvider = ({ children }) => {
             {notification && (
                 <div className={`notification-toast ${notification.type}`}>
                     <div className="notification-content">
-                        {notification.type === 'success' && (
-                            <span className="notification-icon">✓</span>
+                        {(notification.type === 'success' || notification.type === 'glass') && (
+                            <span className="notification-icon">
+                                {notification.type === 'glass' ? '🛍️' : '✓'}
+                            </span>
                         )}
                         <span className="notification-message">{notification.message}</span>
                     </div>

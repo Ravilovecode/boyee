@@ -53,7 +53,7 @@ const ProductPage = () => {
     const handleAddToCart = () => {
         if (product) {
             addToCart({ ...product, quantity });
-            showNotification(`${quantity} x ${product.name} added to cart!`);
+            showNotification(`${quantity} x ${product.name} added to cart!`, 'glass');
         }
     };
 

@@ -134,7 +134,7 @@ function Products({ selectedCategory, title, showViewAll = true }) {
                   className="view-product-btn"
                   onClick={() => {
                     addToCart(product);
-                    showNotification(`${product.name} added to cart!`);
+                    showNotification(`${product.name} added to cart!`, 'glass');
                   }}
                 >
                   ADD TO CART

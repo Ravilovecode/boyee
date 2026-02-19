@@ -56,11 +56,11 @@ export const registerUser = async (name, email, password) => {
     return data;
 };
 
-export const sendOtpApi = async (email) => {
+export const sendOtpApi = async (email, type = 'signup') => {
     const res = await fetch(`${API_URL}/api/users/otp/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, type }),
     });
 
     let data;
@@ -82,6 +82,27 @@ export const verifyOtpApi = async (email, otp) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp }),
+    });
+
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        throw new Error('Something went wrong. Please try again later.');
+    }
+
+    if (!res.ok) {
+        throw new Error(getErrorMessage(data.errorCode, data.message));
+    }
+
+    return data;
+};
+
+export const resetPasswordApi = async (email, otp, newPassword) => {
+    const res = await fetch(`${API_URL}/api/users/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp, newPassword }),
     });
 
     let data;

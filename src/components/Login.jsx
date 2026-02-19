@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import loginBg from '../assets/images/login/login-bg.png';
-import { loginUser, registerUser, sendOtpApi, verifyOtpApi } from '../services/api';
+import { loginUser, registerUser, sendOtpApi, verifyOtpApi, resetPasswordApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
@@ -13,33 +13,66 @@ const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
+  const [resendTimer, setResendTimer] = useState(50);
+
+  // Forgot Password State
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1); // 1: Email, 2: OTP & New Password
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    let interval;
+    if (showOtpModal || (showForgotModal && forgotStep === 2)) {
+      if (resendTimer > 0) {
+        interval = setInterval(() => {
+          setResendTimer((prev) => prev - 1);
+        }, 1000);
+      }
+    } else {
+      setResendTimer(50); // Reset when modal closes
+    }
+    return () => clearInterval(interval);
+  }, [showOtpModal, showForgotModal, forgotStep, resendTimer]);
+
   // Auto-dismiss snackbar after 5 seconds
   useEffect(() => {
-    if (showError) {
+    if (showError || success) {
       const timer = setTimeout(() => {
         setShowError(false);
+        setSuccess('');
         setTimeout(() => setError(''), 400); // clear text after slide-out animation
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [showError]);
+  }, [showError, success]);
 
   const showErrorSnackbar = (message) => {
     setError(message);
+    setSuccess('');
     setShowError(true);
+  };
+
+  const showSuccessSnackbar = (message) => {
+    setSuccess(message);
+    setError('');
+    setShowError(true); // Reusing the show logic, but content will differ
   };
 
   const dismissError = () => {
     setShowError(false);
+    setSuccess('');
     setTimeout(() => setError(''), 400);
   };
 
@@ -62,6 +95,7 @@ const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
         // Signup Flow: Send OTP first
         await sendOtpApi(email);
         setShowOtpModal(true);
+        setResendTimer(50);
         setLoading(false); // Stop loading to allow OTP entry
       }
     } catch (err) {
@@ -136,27 +170,91 @@ const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
     if (lastInput) lastInput.focus();
   };
 
+  const handleResendOtp = async (type = 'signup') => {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const emailToSend = type === 'forgot' ? forgotEmail : email;
+      await sendOtpApi(emailToSend, type);
+      setResendTimer(50);
+      showSuccessSnackbar('OTP sent successfully!');
+      setLoading(false);
+    } catch (err) {
+      showErrorSnackbar(err.message || 'Failed to resend OTP');
+      setLoading(false);
+    }
+  };
+
+  // Forgot Password Handlers
+  const handleForgotClick = () => {
+    setShowForgotModal(true);
+    setForgotStep(1);
+    setForgotEmail('');
+    setNewPassword('');
+    setShowNewPassword(false);
+    setOtp(new Array(6).fill(""));
+    setError('');
+  };
+
+  const handleForgotEmailSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      await sendOtpApi(forgotEmail, 'forgot');
+      setForgotStep(2);
+      setResendTimer(50);
+      setLoading(false);
+    } catch (err) {
+      showErrorSnackbar(err.message || 'Failed to send OTP');
+      setLoading(false);
+    }
+  };
+
+  const handleResetPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const otpString = otp.join("");
+      await resetPasswordApi(forgotEmail, otpString, newPassword);
+      setShowForgotModal(false);
+      setShowSuccessModal(true);
+      // showSuccessSnackbar('Password reset successful. Please login.');
+      // Optional: switch to login mode if not already
+      // setIsLogin(true); // Don't switch yet, let the modal button do it
+      setLoading(false);
+    } catch (err) {
+      showErrorSnackbar(err.message || 'Password reset failed');
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-page">
 
       {/* ====== SNACKBAR ERROR TOAST ====== */}
-      {error && (
-        <div className={`snackbar-error ${showError ? 'snackbar-show' : 'snackbar-hide'}`}>
+      {(error || success) && (
+        <div className={`snackbar-error ${showError ? 'snackbar-show' : 'snackbar-hide'}`} style={success ? { backgroundColor: '#2d6a4f', color: '#fff' } : {}}>
           <div className="snackbar-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-              <path d="M12 8V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="12" cy="16" r="1" fill="currentColor" />
-            </svg>
+            {success ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                <path d="M12 8V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="12" cy="16" r="1" fill="currentColor" />
+              </svg>
+            )}
           </div>
-          <span className="snackbar-text">{error}</span>
+          <span className="snackbar-text">{error || success}</span>
           <button className="snackbar-close" onClick={dismissError} aria-label="Dismiss">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
           <div className="snackbar-progress">
-            <div className={`snackbar-progress-bar ${showError ? 'snackbar-progress-animate' : ''}`} />
+            <div className={`snackbar-progress-bar ${showError ? 'snackbar-progress-animate' : ''}`} style={success ? { backgroundColor: 'rgba(255,255,255,0.5)' } : {}} />
           </div>
         </div>
       )}
@@ -188,6 +286,104 @@ const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
               <button onClick={handleVerifyOtp} disabled={loading}>{loading ? 'Verifying...' : 'Verify'}</button>
               <button className="cancel-btn" onClick={() => setShowOtpModal(false)}>Cancel</button>
             </div>
+            <div className="resend-container" style={{ textAlign: 'center', marginTop: '10px' }}>
+              <button
+                type="button"
+                className="resend-link"
+                onClick={() => handleResendOtp('signup')}
+                disabled={resendTimer > 0 || loading}
+                style={{ background: 'none', border: 'none', color: resendTimer > 0 ? '#999' : '#2d6a4f', cursor: resendTimer > 0 ? 'default' : 'pointer', textDecoration: resendTimer > 0 ? 'none' : 'underline' }}
+              >
+                {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ====== FORGOT PASSWORD MODAL ====== */}
+      {showForgotModal && (
+        <div className="otp-modal-overlay">
+          <div className="otp-modal">
+            <h3>{forgotStep === 1 ? 'Reset Password' : 'New Password'}</h3>
+
+            {forgotStep === 1 ? (
+              <div className="forgot-step-1">
+                <p>Enter your email address to receive a password reset code.</p>
+                <div className="login-input-group" style={{ marginBottom: '1rem', width: '100%' }}>
+                  <span className="input-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="#999" strokeWidth="1.5" /><path d="M22 6L12 13L2 6" stroke="#999" strokeWidth="1.5" /></svg>
+                  </span>
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    className="login-input"
+                    required
+                  />
+                </div>
+                <div className="otp-actions">
+                  <button onClick={handleForgotEmailSubmit} disabled={loading || !forgotEmail}>
+                    {loading ? 'Sending...' : 'Send OTP'}
+                  </button>
+                  <button className="cancel-btn" onClick={() => setShowForgotModal(false)}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div className="forgot-step-2">
+                <p>Enter the OTP sent to {forgotEmail} and your new password.</p>
+                <div className="otp-input-container" style={{ marginBottom: '1rem' }}>
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      id={`otp-input-${index}`}
+                      type="text"
+                      className="otp-digit-input"
+                      value={digit}
+                      onChange={(e) => handleOtpChange(e, index)}
+                      onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                      onPaste={handleOtpPaste}
+                      maxLength="1"
+                      autoFocus={index === 0}
+                    />
+                  ))}
+                </div>
+                <div className="login-input-group" style={{ marginBottom: '1rem', width: '100%' }}>
+                  <span className="input-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#999" strokeWidth="1.5" /><path d="M7 11V7C7 5.67 7.53 4.4 8.46 3.46C9.4 2.53 10.67 2 12 2C13.33 2 14.6 2.53 15.54 3.46C16.47 4.4 17 5.67 17 7V11" stroke="#999" strokeWidth="1.5" /></svg>
+                  </span>
+                  <input
+                    type={showNewPassword ? 'text' : 'password'}
+                    placeholder="New Password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="login-input"
+                    required
+                  />
+                  <button type="button" className="toggle-password" onClick={() => setShowNewPassword(!showNewPassword)}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="#999" strokeWidth="1.5" /><circle cx="12" cy="12" r="3" stroke="#999" strokeWidth="1.5" /></svg>
+                  </button>
+                </div>
+                <div className="otp-actions">
+                  <button onClick={handleResetPasswordSubmit} disabled={loading || !newPassword}>
+                    {loading ? 'Resetting...' : 'Reset Password'}
+                  </button>
+                  <button className="cancel-btn" onClick={() => setShowForgotModal(false)}>Cancel</button>
+                </div>
+                <div className="resend-container" style={{ textAlign: 'center', marginTop: '10px' }}>
+                  <button
+                    type="button"
+                    className="resend-link"
+                    onClick={() => handleResendOtp('forgot')}
+                    disabled={resendTimer > 0 || loading}
+                    style={{ background: 'none', border: 'none', color: resendTimer > 0 ? '#999' : '#2d6a4f', cursor: resendTimer > 0 ? 'default' : 'pointer', textDecoration: resendTimer > 0 ? 'none' : 'underline' }}
+                  >
+                    {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -252,7 +448,7 @@ const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
 
               {isLogin && (
                 <div className="login-forgot">
-                  <button type="button" className="forgot-link">Forgot Password?</button>
+                  <button type="button" className="forgot-link" onClick={handleForgotClick}>Forgot Password?</button>
                 </div>
               )}
 
@@ -307,7 +503,7 @@ const Login = ({ initialIsLogin = true, onSuccess, isModal = false }) => {
                       <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
                       <span className="ld-check">✔</span> REMEMBER
                     </label>
-                    <button type="button" className="ld-forgot">FORGOT PASSWORD?</button>
+                    <button type="button" className="ld-forgot" onClick={handleForgotClick}>FORGOT PASSWORD?</button>
                   </div>
                 )}
 

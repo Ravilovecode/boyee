@@ -1,15 +1,23 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getMyOrders } from '../services/orderService';
+import { useAuth } from '../context/AuthContext';
 import Loader from '../components/Loader';
 import './MyOrdersPage.css';
 
 const MyOrdersPage = () => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (!user) {
+            setLoading(false);
+            return;
+        }
+
         const fetchOrders = async () => {
             try {
                 const data = await getMyOrders();
@@ -22,9 +30,39 @@ const MyOrdersPage = () => {
         };
 
         fetchOrders();
-    }, []);
+    }, [user]);
 
     if (loading) return <Loader />;
+
+    // Guest View
+    if (!user) {
+        return (
+            <section className="my-orders-section guest-view">
+                <div className="container">
+                    <div className="guest-orders-container">
+                        <div className="guest-icon">📦</div>
+                        <h2>Track Your Orders</h2>
+                        <p>You have not logged in. Please login or signup if you are a new user to view your orders and exciting offers.</p>
+                        <div className="guest-actions">
+                            <button
+                                className="login-btn"
+                                onClick={() => navigate('/login', { state: { from: '/myorders' } })}
+                            >
+                                Log In
+                            </button>
+                            <button
+                                className="signup-btn"
+                                onClick={() => navigate('/login', { state: { showSignup: true, from: '/myorders' } })}
+                            >
+                                Sign Up
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     if (error) return <div className="error-container">{error}</div>;
 
     return (
@@ -39,7 +77,7 @@ const MyOrdersPage = () => {
                 ) : (
                     <div className="orders-list">
                         {orders.map((order) => (
-                            <div key={order._id} className="order-card">
+                            <Link key={order._id} to={`/order/${order._id}`} className="order-card">
                                 <div className="order-card-content">
                                     <div className="order-image-column">
                                         {order.orderItems.length > 0 && (
@@ -66,20 +104,19 @@ const MyOrdersPage = () => {
                                                 {order.orderItems.map(item => item.name).join(', ')}
                                             </h3>
                                             <div className="order-meta-row">
-                                                <span className="order-rating">★★★★☆</span> {/* Placeholder for rating */}
-                                            </div>
-                                            <div className="order-price-row">
-                                                <span className="currency">₹</span>
-                                                <span className="price">{order.totalPrice.toFixed(0)}</span>
+                                                <span className="order-rating">★★★★☆</span>
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="order-right-column">
+                                        <span className="order-right-price">₹{order.totalPrice.toFixed(0)}</span>
+                                        <span className="order-right-qty">
+                                            {order.orderItems.reduce((sum, item) => sum + item.qty, 0)} item{order.orderItems.reduce((sum, item) => sum + item.qty, 0) !== 1 ? 's' : ''}
+                                        </span>
+                                        <span className="order-chevron">›</span>
+                                    </div>
                                 </div>
-                                <div className="order-actions-row">
-                                    {/* View details could go here or be a full clickable card */}
-                                    <Link to={`/order/${order._id}`} className="view-details-link">View Details</Link>
-                                </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 )}
