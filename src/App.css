@@ -8,3 +8,10 @@
 .main-content {
   min-height: 100vh;
 }
+
+/* Global offset for fixed navbar on mobile */
+@media (max-width: 768px) {
+  .main-content {
+    padding-top: 70px;
+  }
+}

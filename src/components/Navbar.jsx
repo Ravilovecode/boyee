@@ -4,10 +4,13 @@ import './Navbar.css';
 import logo from '../assets/images/logo.png';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import useScrollDirection from '../hooks/useScrollDirection';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const scrollDir = useScrollDirection();
+  const hidden = scrollDir === 'down';
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
@@ -42,7 +45,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar${hidden ? ' navbar--hidden' : ''}`}>
       <div className="navbar-container">
         <Link to="/home" className="navbar-logo">
           <img src={logo} alt="Boyee" className="logo-icon" />

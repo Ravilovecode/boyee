@@ -1,9 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import useScrollDirection from '../hooks/useScrollDirection';
 import './BottomNav.css';
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const scrollDir = useScrollDirection();
+  const hidden = scrollDir === 'down';
 
   const navItems = [
     {
@@ -63,7 +66,7 @@ const BottomNav = () => {
   }
 
   return (
-    <nav className="bottom-nav">
+    <nav className={`bottom-nav${hidden ? ' bottom-nav--hidden' : ''}`}>
       <div className="bottom-nav-container">
         {navItems.map((item) => (
           <button

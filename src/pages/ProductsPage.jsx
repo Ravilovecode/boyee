@@ -7,7 +7,7 @@ function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   return (
-    <div style={{ paddingBottom: '80px', paddingTop: '100px' }}> {/* Padding for bottom nav and top navbar */}
+    <div style={{ paddingBottom: '80px', paddingTop: '20px' }}> {/* Padding for bottom nav and top navbar */}
       <CategoryAvatars
         onSelectCategory={setSelectedCategory}
         selectedCategory={selectedCategory}
