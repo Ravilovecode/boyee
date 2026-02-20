@@ -147,6 +147,12 @@
     color: #2e7d32;
 }
 
+.status-badge.shipped {
+    background-color: #fff3e0;
+    color: #e65c00;
+    border: 1px solid #ffb74d;
+}
+
 .status-badge.unpaid,
 .status-badge.processing {
     background-color: #fff3e0;

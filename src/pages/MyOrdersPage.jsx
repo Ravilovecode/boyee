@@ -95,8 +95,11 @@ const MyOrdersPage = () => {
                                     <div className="order-details-column">
                                         <div className="order-primary-info">
                                             <div className="order-status-row">
-                                                <span className={`status-text ${order.isDelivered ? 'delivered' : 'processing'}`}>
-                                                    {order.isDelivered ? 'Delivered' : 'Processing'}
+                                                <span className={`status-text ${order.isDelivered ? 'delivered'
+                                                        : order.isShipped ? 'shipped'
+                                                            : 'processing'
+                                                    }`}>
+                                                    {order.isDelivered ? 'Delivered' : order.isShipped ? 'Shipped' : 'Processing'}
                                                 </span>
                                                 <span className="order-date">On {new Date(order.createdAt).toLocaleDateString()}</span>
                                             </div>

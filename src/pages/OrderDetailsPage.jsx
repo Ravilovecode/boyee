@@ -110,10 +110,19 @@ const OrderDetailsPage = () => {
 
                         <div className="delivery-info-card">
                             <h3>Delivery Status</h3>
-                            <div className={`status-badge ${order?.isDelivered ? 'delivered' : 'processing'}`}>
-                                {order?.isDelivered ? `Delivered on ${formatDate(order.deliveredAt)}` : 'Processing'}
+                            <div className={`status-badge ${order?.isDelivered ? 'delivered'
+                                    : order?.isShipped ? 'shipped'
+                                        : 'processing'
+                                }`}>
+                                {order?.isDelivered
+                                    ? `Delivered on ${formatDate(order.deliveredAt)}`
+                                    : order?.isShipped
+                                        ? `Shipped on ${formatDate(order.shippedAt)}`
+                                        : 'Processing'
+                                }
                             </div>
-                            {!order?.isDelivered && <p className="tat-note">Estimated Delivery: 5-7 Days</p>}
+                            {!order?.isDelivered && !order?.isShipped && <p className="tat-note">Estimated Delivery: 5-7 Days</p>}
+                            {order?.isShipped && !order?.isDelivered && <p className="tat-note">Your order is on the way!</p>}
                         </div>
 
                         <div className="cost-summary-card">

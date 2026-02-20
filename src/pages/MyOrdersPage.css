@@ -243,6 +243,10 @@ h2 {
     color: #27ae60;
 }
 
+.status-text.shipped {
+    color: #fb923c;
+}
+
 .status-text.processing {
     color: #f39c12;
 }
