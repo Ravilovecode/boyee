@@ -7,9 +7,10 @@ import './Products.css'
 // import rightPlant from '../assets/images/gallery/right.png'
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useNotification } from '../context/NotificationContext';
+import { useAuth } from '../context/AuthContext';
 import { getAllPlants } from '../services/plantService';
 import Loader from './Loader';
 import './Products.css';
@@ -17,9 +18,24 @@ import './Products.css';
 function Products({ selectedCategory, title, showViewAll = true }) {
   const { addToCart } = useCart();
   const { showNotification } = useNotification();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const handleBuyNow = (product) => {
+    if (product) {
+      const itemForCheckout = { ...product, qty: 1 };
+      localStorage.setItem('boyeeBuyNowItem', JSON.stringify([itemForCheckout]));
+
+      if (user) {
+        navigate('/checkout?source=buynow');
+      } else {
+        navigate('/account', { state: { showSignup: true, from: '/checkout?source=buynow' } });
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -129,16 +145,29 @@ function Products({ selectedCategory, title, showViewAll = true }) {
                   <span className="price-original">₹{product.originalPrice}</span>
                 </div>
 
-                {/* View Product Button */}
-                <button
-                  className="view-product-btn"
-                  onClick={() => {
-                    addToCart(product);
-                    showNotification(`${product.name} added to cart!`, 'glass');
-                  }}
-                >
-                  ADD TO CART
-                </button>
+                {/* Action Buttons */}
+                <div className="product-action-buttons">
+                  <button
+                    className="buy-now-btn"
+                    onClick={() => handleBuyNow(product)}
+                  >
+                    BUY NOW
+                  </button>
+                  <button
+                    className="cart-icon-btn"
+                    onClick={() => {
+                      addToCart({ ...product, quantity: 1 });
+                      showNotification(`${product.name} added to cart!`, 'glass');
+                    }}
+                    title="Add to Cart"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="9" cy="21" r="1"></circle>
+                      <circle cx="20" cy="21" r="1"></circle>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
