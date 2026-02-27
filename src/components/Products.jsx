@@ -15,7 +15,7 @@ import { getAllPlants } from '../services/plantService';
 import Loader from './Loader';
 import './Products.css';
 
-function Products({ selectedCategory, title, showViewAll = true }) {
+function Products({ selectedCategory, title, showViewAll = true, searchQuery = '' }) {
   const { addToCart } = useCart();
   const { showNotification } = useNotification();
   const { user } = useAuth();
@@ -45,6 +45,9 @@ function Products({ selectedCategory, title, showViewAll = true }) {
         if (selectedCategory) {
           query.category = selectedCategory;
         }
+        if (searchQuery) {
+          query.search = searchQuery;
+        }
 
         const data = await getAllPlants(query);
         // Map backend data to frontend structure
@@ -71,12 +74,24 @@ function Products({ selectedCategory, title, showViewAll = true }) {
     };
 
     fetchProducts();
-  }, [selectedCategory]);
+  }, [selectedCategory, searchQuery]);
 
   if (loading) return <Loader />;
   if (error) return <div className="products-container"><p>{error}</p></div>;
   // If no products in this category (and it's a section), maybe hide it?
-  if (products.length === 0) return null;
+  if (products.length === 0) {
+    if (searchQuery) {
+      return (
+        <section className="products-section">
+          <div className="products-container" style={{ textAlign: 'center', padding: '40px 0' }}>
+            <h3>No products found for "{searchQuery}"</h3>
+            <p style={{ color: '#888', marginTop: '10px' }}>Try checking your spelling or browsing our categories.</p>
+          </div>
+        </section>
+      );
+    }
+    return null;
+  }
 
   return (
     <section className="products-section">
