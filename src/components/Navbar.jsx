@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../assets/images/logo.png';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import useScrollDirection from '../hooks/useScrollDirection';
+import { getAllPlants } from '../services/plantService';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef(null);
+
   const scrollDir = useScrollDirection();
   const hidden = scrollDir === 'down';
   const navigate = useNavigate();
@@ -30,9 +36,44 @@ const Navbar = () => {
     navigate(path);
   };
 
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (searchQuery.trim().length > 1) {
+        setIsSearching(true);
+        try {
+          const results = await getAllPlants({ search: searchQuery });
+          setSearchSuggestions(results.slice(0, 5)); // Limit to 5 suggestions
+          setShowSuggestions(true);
+        } catch (error) {
+          console.error("Failed to fetch search suggestions", error);
+        } finally {
+          setIsSearching(false);
+        }
+      } else {
+        setSearchSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const handleSearch = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (searchQuery.trim()) {
+      setShowSuggestions(false);
       // Navigate to products with search query
       navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
     }
@@ -52,7 +93,7 @@ const Navbar = () => {
         </Link>
 
         {/* Search Bar */}
-        <div className="navbar-search-container">
+        <div className="navbar-search-container" ref={searchRef}>
           <form className="search-form" onSubmit={handleSearch}>
             <div className="search-input-wrapper">
               <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,9 +106,46 @@ const Navbar = () => {
                 placeholder="Search For Plants..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => { if (searchQuery.trim().length > 1) setShowSuggestions(true); }}
               />
             </div>
           </form>
+
+          {/* Search Suggestions Dropdown */}
+          {showSuggestions && (
+            <div className="search-suggestions-dropdown">
+              {isSearching ? (
+                <div className="search-suggestion-item loading">
+                  <span className="spinner"></span> Searching...
+                </div>
+              ) : searchSuggestions.length > 0 ? (
+                <>
+                  {searchSuggestions.map((plant) => (
+                    <div
+                      key={plant._id}
+                      className="search-suggestion-item"
+                      onClick={() => {
+                        setShowSuggestions(false);
+                        setSearchQuery('');
+                        navigate(`/product/${plant._id}`);
+                      }}
+                    >
+                      <img src={plant.image} alt={plant.name} className="suggestion-image" />
+                      <div className="suggestion-info">
+                        <span className="suggestion-name">{plant.name}</span>
+                        <span className="suggestion-price">₹{plant.price}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="search-suggestion-footer" onClick={handleSearch}>
+                    View all results for "{searchQuery}"
+                  </div>
+                </>
+              ) : (
+                <div className="search-suggestion-item empty">No plants found for "{searchQuery}"</div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Desktop Section: Links, Profile, Cart, Logout */}
