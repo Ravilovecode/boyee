@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Hero.css';
-import HowItWorksModal from './HowItWorksModal';
 import heroPlant from '../assets/images/hero-plant1.png';
 import plantSmall1 from '../assets/images/plant-small-1.png';
 import plantSmall2 from '../assets/images/plant-small-2.png';
@@ -10,7 +9,6 @@ import { FloatingLeaves } from './landing/ai-mascot';
 const Hero = () => {
   const categories = ['WATER ALERTS', 'DISEASE DETECTION', 'AI CARE TIPS', 'HEALTH MONITOR', 'MEDICINE GUIDE', 'SUNLIGHT TRACKER'];
   const [typedText, setTypedText] = useState('');
-  const [showHowItWorks, setShowHowItWorks] = useState(false);
   const fullText = "We don't just sell plants — we provide proper measures to care for your plants with our AI-powered app.";
 
   useEffect(() => {
@@ -118,14 +116,14 @@ const Hero = () => {
             </p>
 
             <div className="hero-actions">
-              <button className="btn-shop" onClick={() => setShowHowItWorks(true)}>
+              <a href="#shop" className="btn-shop">
                 <span className="btn-arrow">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
-                <span className="btn-text">SEE HOW IT WORKS</span>
-              </button>
+                <span className="btn-text">GET THE APP</span>
+              </a>
               <Link to="/products" className="btn-explore">
                 EXPLORE PLANTS
               </Link>
@@ -153,12 +151,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-
-      {/* How It Works Modal */}
-      <HowItWorksModal
-        isOpen={showHowItWorks}
-        onClose={() => setShowHowItWorks(false)}
-      />
     </section>
   );
 };
