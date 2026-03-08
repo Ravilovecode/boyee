@@ -16,6 +16,9 @@
   filter: blur(60px);
   pointer-events: none;
   animation: heroMorph 12s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  /* Force GPU acceleration */
 }
 
 .hero-orb-1 {
@@ -532,7 +535,8 @@
   }
 
   .hero-container {
-    padding: 0 25px;
+    padding: 0 15px 100px 15px;
+    /* Added substantial bottom padding for the bottom nav bar */
     gap: 15px;
     flex-direction: column;
   }
@@ -583,17 +587,13 @@
 
   .hero-title {
     order: 2;
-    font-size: 2rem;
+    font-size: 2.2rem;
     letter-spacing: 1px;
     line-height: 1.15;
     text-align: center;
     margin-top: 10px;
+    padding: 0 10px;
   }
-
-  /* Make title fit in 2 lines */
-  /* .hero-title br {
-    display: none;
-  } */
 
   .hero-title .title-outline,
   .hero-title .title-green {
@@ -625,14 +625,14 @@
   }
 
   .hero-plant-img {
-    width: 280px;
-    max-height: 350px;
+    width: 260px;
+    max-height: 320px;
   }
 
-
-
   .hero-typing {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    padding: 0 10px;
+    margin-bottom: 20px;
   }
 
   .hero-description {
