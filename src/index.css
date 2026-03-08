@@ -1,44 +1,49 @@
-/* ===== CSS RESET & GLOBALS ===== */
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import 'tailwindcss';
 
-html {
-  scroll-behavior: smooth;
-}
+@layer base {
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #2C2C2C;
-  color: #ffffff;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  margin: 0;
-  min-height: 100vh;
-}
+  /* ===== CSS RESET & GLOBALS ===== */
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
+  html {
+    scroll-behavior: smooth;
+  }
 
-ul {
-  list-style: none;
-}
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #2C2C2C;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    margin: 0;
+    min-height: 100vh;
+  }
 
-img {
-  max-width: 100%;
-  display: block;
-}
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 
-button {
-  cursor: pointer;
-  font-family: inherit;
+  ul {
+    list-style: none;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -87,17 +92,18 @@ body {
   width: 100%;
 }
 
-/* Touch-friendly tap targets */
+/* Touch-friendly tap targets - scoped to non-landing sections */
 @media (max-width: 768px) {
-  button,
-  a,
-  input,
-  select,
-  textarea {
+
+  button:not(.landing-section button):not(.landing-section *),
+  a:not(.landing-section a):not(.landing-section *),
+  input:not(.landing-section input):not(.landing-section *),
+  select:not(.landing-section select):not(.landing-section *),
+  textarea:not(.landing-section textarea):not(.landing-section *) {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Improve touch scrolling */
   * {
     -webkit-tap-highlight-color: transparent;
@@ -109,4 +115,258 @@ body {
 .carousel-container,
 .navbar-container {
   transition: padding 0.3s ease;
+}
+
+/* ===== TAILWIND THEME VARIABLES (Dark Plant Theme) ===== */
+@theme inline {
+  --color-background: #1a1a2e;
+  --color-foreground: #f5f5f5;
+  --color-card: rgba(30, 41, 30, 0.6);
+  --color-card-foreground: #f5f5f5;
+  --color-popover: #1e291e;
+  --color-popover-foreground: #f5f5f5;
+  --color-primary: #34d399;
+  --color-primary-foreground: #0f1a0f;
+  --color-secondary: #2d3a2d;
+  --color-secondary-foreground: #f5f5f5;
+  --color-muted: #3a3a3a;
+  --color-muted-foreground: #a3a3a3;
+  --color-accent: #2dd4bf;
+  --color-accent-foreground: #f5f5f5;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #f5f5f5;
+  --color-border: rgba(52, 211, 153, 0.2);
+  --color-input: #2d3a2d;
+  --color-ring: #34d399;
+  --color-chart-1: #34d399;
+  --color-chart-2: #2dd4bf;
+  --color-chart-3: #14b8a6;
+  --color-chart-4: #eab308;
+  --color-chart-5: #22d3ee;
+}
+
+/* ===== CUSTOM ANIMATIONS FOR LANDING PAGE ===== */
+@keyframes bounce-slow {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes eye-blink {
+
+  0%,
+  15%,
+  25%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  10% {
+    transform: scaleY(0.05);
+  }
+
+  20% {
+    transform: scaleY(0.05);
+  }
+}
+
+@keyframes wiggle {
+
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes sparkle {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.4;
+  }
+
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: translateY(-40px) translateX(-5px);
+    opacity: 0.4;
+  }
+
+  75% {
+    transform: translateY(-20px) translateX(-10px);
+    opacity: 0.8;
+  }
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes typing {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(52, 211, 153, 0.6);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes morph {
+
+  0%,
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(300px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 3s ease-in-out infinite;
+}
+
+.animate-blink {
+  animation: eye-blink 3s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-fall {
+  animation: fall 20s linear infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-draw {
+  stroke-dasharray: 100;
+  animation: draw 2s ease-out forwards;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
+}
+
+.animate-morph {
+  animation: morph 8s ease-in-out infinite;
 }

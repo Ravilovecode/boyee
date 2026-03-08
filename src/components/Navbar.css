@@ -5,7 +5,7 @@
   top: 0;
   left: 0;
   z-index: 100;
-  background: #2C2C2C;
+  background: #0a0f0a;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -152,49 +152,50 @@
 /* ===== HAMBURGER MENU ===== */
 .hamburger-btn {
   display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 26px;
-  height: 20px;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   cursor: pointer;
   z-index: 110;
-  padding: 0;
+  padding: 4px;
   min-height: auto;
   min-width: auto;
+  color: #ffffff;
+  transition: color 0.3s ease;
 }
 
-.hamburger-line {
-  width: 100%;
-  height: 1.6px;
-  background: #ffffff;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-  margin-left: auto;
+.hamburger-btn:hover {
+  color: #7cb342;
 }
 
-.hamburger-line:nth-child(1) {
-  width: 75%;
+.hamburger-svg-line {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
 
-.hamburger-line:nth-child(3) {
-  width: 55%;
+.line-top {
+  transform: none;
 }
 
-.hamburger-btn.active .hamburger-line:nth-child(1) {
-  transform: translateY(9.25px) rotate(45deg);
-  width: 100%;
+.line-mid {
+  opacity: 1;
 }
 
-.hamburger-btn.active .hamburger-line:nth-child(2) {
+.line-bot {
+  transform: none;
+}
+
+.hamburger-btn.active .line-top {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger-btn.active .line-mid {
   opacity: 0;
-  width: 95%;
 }
 
-.hamburger-btn.active .hamburger-line:nth-child(3) {
-  transform: translateY(-9.25px) rotate(-45deg);
-  width: 100%;
+.hamburger-btn.active .line-bot {
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 /* ===== MENU OVERLAY ===== */
@@ -600,9 +601,9 @@
   }
 
   .search-input-wrapper {
-    padding: 2px 12px;
+    padding: 8px 14px;
     border-radius: 30px;
-    gap: 6px;
+    gap: 8px;
   }
 
   .search-icon {
@@ -615,8 +616,8 @@
   }
 
   .logo-icon {
-    width: 90px;
-    height: 55px;
+    width: 80px;
+    height: 45px;
   }
 
   .navbar-icons {
@@ -855,8 +856,8 @@
   }
 
   .search-input-wrapper {
-    padding: 1px 12px 1px 28px;
-    gap: 4px;
+    padding: 7px 12px;
+    gap: 6px;
     border-radius: 30px;
   }
 
@@ -870,8 +871,8 @@
   }
 
   .logo-icon {
-    width: 80px;
-    height: 50px;
+    width: 70px;
+    height: 40px;
   }
 
   .mobile-drawer {
