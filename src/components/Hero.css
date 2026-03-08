@@ -90,6 +90,8 @@
   align-items: flex-start;
   gap: 40px;
   width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
 /* ===== LEFT SIDE ===== */

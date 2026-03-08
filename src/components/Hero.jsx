@@ -9,6 +9,7 @@ import { FloatingLeaves } from './landing/ai-mascot';
 const Hero = () => {
   const categories = ['WATER ALERTS', 'DISEASE DETECTION', 'AI CARE TIPS', 'HEALTH MONITOR', 'MEDICINE GUIDE', 'SUNLIGHT TRACKER'];
   const [typedText, setTypedText] = useState('');
+  const [showVideo, setShowVideo] = useState(false);
   const fullText = "We don't just sell plants — we provide proper measures to care for your plants with our AI-powered app.";
 
   useEffect(() => {
@@ -52,6 +53,19 @@ const Hero = () => {
     const interval = setInterval(cycle, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleOpenVideo = () => {
+    console.log('>>> STEP 1: Button clicked!');
+    setShowVideo(true);
+    console.log('>>> STEP 2: setShowVideo(true) called');
+  };
+
+  const handleCloseVideo = () => {
+    console.log('>>> Closing video modal');
+    setShowVideo(false);
+  };
+
+  console.log('>>> Hero render, showVideo =', showVideo);
 
   return (
     <section className="hero">
@@ -116,14 +130,18 @@ const Hero = () => {
             </p>
 
             <div className="hero-actions">
-              <a href="#shop" className="btn-shop">
+              <div
+                className="btn-shop"
+                onClick={handleOpenVideo}
+                style={{ cursor: 'pointer', position: 'relative', zIndex: 9999 }}
+              >
                 <span className="btn-arrow">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
-                <span className="btn-text">GET THE APP</span>
-              </a>
+                <span className="btn-text">SEE HOW IT WORKS</span>
+              </div>
               <Link to="/products" className="btn-explore">
                 EXPLORE PLANTS
               </Link>
@@ -151,6 +169,77 @@ const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* ===== SIMPLE VIDEO POPUP — all inline styles ===== */}
+      {showVideo && (
+        <div
+          onClick={handleCloseVideo}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 99999,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              width: '70%',
+              maxWidth: '480px',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              background: '#000',
+            }}
+          >
+            {/* Close button */}
+            <div
+              onClick={handleCloseVideo}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.2)',
+                color: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 10,
+                fontSize: '18px',
+              }}
+            >
+              ✕
+            </div>
+
+            {/* Video */}
+            <video
+              src="/boyee_intro.mp4"
+              controls
+              autoPlay
+              playsInline
+              onPlay={() => console.log('>>> STEP 3: Video started playing!')}
+              onError={(e) => console.error('>>> VIDEO ERROR:', e.target.error)}
+              style={{
+                width: '100%',
+                maxHeight: '70vh',
+                objectFit: 'contain',
+                display: 'block',
+                borderRadius: '16px',
+              }}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };

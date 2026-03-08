@@ -1,10 +1,24 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "../ui/button"
 import { ArrowRight, Leaf, Sparkles } from "lucide-react"
 import { AIMascot, AIParticles, FloatingLeaves } from "./ai-mascot"
 
 export function HeroSection() {
+    const [showVideo, setShowVideo] = useState(false)
+
+    const handleOpenVideo = () => {
+        console.log('>>> STEP 1: See How It Works clicked!')
+        setShowVideo(true)
+        console.log('>>> STEP 2: setShowVideo(true) called')
+    }
+
+    const handleCloseVideo = () => {
+        console.log('>>> Closing video modal')
+        setShowVideo(false)
+    }
+
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20 bg-[#0a0f0a]">
             {/* Animated floating leaves */}
@@ -50,7 +64,12 @@ export function HeroSection() {
                             <Leaf className="w-5 h-5" />
                             Download Free
                         </Button>
-                        <Button variant="outline" size="lg" className="gap-2 px-8 py-6 text-lg rounded-full border-gray-700 bg-gray-800/50 backdrop-blur-sm text-white hover:bg-gray-700">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            className="gap-2 px-8 py-6 text-lg rounded-full border-gray-700 bg-gray-800/50 backdrop-blur-sm text-white hover:bg-gray-700"
+                            onClick={handleOpenVideo}
+                        >
                             See How It Works
                             <ArrowRight className="w-5 h-5" />
                         </Button>
@@ -130,6 +149,79 @@ export function HeroSection() {
                     ))}
                 </div>
             </div>
+
+            {/* ===== VIDEO POPUP ===== */}
+            {showVideo && (
+                <div
+                    onClick={handleCloseVideo}
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0,0,0,0.92)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 99999,
+                        backdropFilter: 'blur(12px)',
+                    }}
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            position: 'relative',
+                            width: '70%',
+                            maxWidth: '480px',
+                            borderRadius: '16px',
+                            overflow: 'hidden',
+                            background: '#000',
+                            boxShadow: '0 0 60px rgba(124, 179, 66, 0.15), 0 25px 50px rgba(0,0,0,0.5)',
+                        }}
+                    >
+                        {/* Close button */}
+                        <div
+                            onClick={handleCloseVideo}
+                            style={{
+                                position: 'absolute',
+                                top: '12px',
+                                right: '12px',
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                background: 'rgba(255,255,255,0.15)',
+                                color: '#fff',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                zIndex: 10,
+                                fontSize: '20px',
+                                border: '1px solid rgba(255,255,255,0.2)',
+                            }}
+                        >
+                            ✕
+                        </div>
+
+                        {/* Video player */}
+                        <video
+                            src="/boyee_intro.mp4"
+                            controls
+                            autoPlay
+                            playsInline
+                            onPlay={() => console.log('>>> STEP 3: Video is playing!')}
+                            onError={(e) => console.error('>>> VIDEO ERROR:', e.target.error)}
+                            style={{
+                                width: '100%',
+                                maxHeight: '70vh',
+                                objectFit: 'contain',
+                                display: 'block',
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
         </section>
     )
 }
