@@ -6,25 +6,27 @@ import plantSmall1 from '../assets/images/plant-small-1.png';
 import plantSmall2 from '../assets/images/plant-small-2.png';
 import { FloatingLeaves } from './landing/ai-mascot';
 
-const Hero = () => {
-  const categories = ['WATER ALERTS', 'DISEASE DETECTION', 'AI CARE TIPS', 'HEALTH MONITOR', 'MEDICINE GUIDE', 'SUNLIGHT TRACKER'];
+const TypingText = ({ text }) => {
   const [typedText, setTypedText] = useState('');
-  const [showVideo, setShowVideo] = useState(false);
-  const fullText = "We don't just sell plants — we provide proper measures to care for your plants with our AI-powered app.";
-
   useEffect(() => {
     let index = 0;
     const timer = setInterval(() => {
-      if (index <= fullText.length) {
-        setTypedText(fullText.substring(0, index));
+      if (index <= text.length) {
+        setTypedText(text.substring(0, index));
         index++;
       } else {
         clearInterval(timer);
       }
     }, 50);
-
     return () => clearInterval(timer);
-  }, []);
+  }, [text]);
+  return <p className="hero-typing">{typedText}</p>;
+};
+
+const Hero = () => {
+  const categories = ['WATER ALERTS', 'DISEASE DETECTION', 'AI CARE TIPS', 'HEALTH MONITOR', 'MEDICINE GUIDE', 'SUNLIGHT TRACKER'];
+  const [showVideo, setShowVideo] = useState(false);
+  const fullText = "We don't just sell plants — we provide proper measures to care for your plants with our AI-powered app.";
 
   const [mascotPos, setMascotPos] = useState({ top: 'auto', bottom: '30px', left: 'auto', right: '-30px' });
   const [mascotVisible, setMascotVisible] = useState(false);
@@ -125,9 +127,7 @@ const Hero = () => {
               HOME
             </h1>
 
-            <p className="hero-typing">
-              {typedText}
-            </p>
+            <TypingText text={fullText} />
 
             <div className="hero-actions">
               <div
